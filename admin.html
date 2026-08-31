@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Admin · iPhone Culture — Analytics locales</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .admin-main { max-width: 1140px; margin: 0 auto; padding: 60px 24px 120px; }
+  .admin-head { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 14px; }
+  .admin-head h1 { font-size: clamp(28px, 4vw, 40px); font-weight: 800; letter-spacing: -1px; }
+  .admin-head h1 span { color: var(--accent); }
+  .admin-note {
+    background: var(--accent-soft); border: 1px solid rgba(212, 175, 106, 0.35); color: var(--accent);
+    border-radius: 12px; padding: 12px 18px; font-size: 13.5px; font-weight: 600; margin-bottom: 40px;
+  }
+  .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 40px; }
+  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 22px 20px; }
+  .stat-card .stat-num { font-size: 34px; font-weight: 800; color: var(--accent); letter-spacing: -1px; }
+  .stat-card .stat-label { font-size: 13px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; }
+  .admin-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 26px 24px; margin-bottom: 28px; }
+  .admin-panel h2 { font-size: 19px; font-weight: 800; margin-bottom: 18px; letter-spacing: -0.3px; }
+  .chart { display: flex; align-items: flex-end; gap: 8px; height: 180px; padding-top: 10px; }
+  .chart-bar { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; min-width: 0; }
+  .chart-bar .bar {
+    width: 100%; max-width: 56px; border-radius: 8px 8px 0 0;
+    background: linear-gradient(180deg, var(--accent), rgba(212, 175, 106, 0.35));
+    min-height: 3px; transition: height .3s ease;
+  }
+  .chart-bar .bar-val { font-size: 12px; font-weight: 700; color: var(--text); }
+  .chart-bar .bar-label { font-size: 11px; color: var(--text-dim); white-space: nowrap; }
+  .ref-list, .conv-list { display: flex; flex-direction: column; gap: 10px; }
+  .ref-row { display: flex; justify-content: space-between; gap: 14px; font-size: 14px; padding: 10px 14px; background: var(--surface-2); border-radius: 10px; }
+  .ref-row .ref-name { color: var(--text-dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ref-row .ref-count { font-weight: 700; color: var(--accent); flex-shrink: 0; }
+  .admin-table-wrap { overflow-x: auto; }
+  .admin-table { width: 100%; border-collapse: collapse; min-width: 560px; }
+  .admin-table th, .admin-table td { padding: 12px 14px; text-align: left; font-size: 13.5px; border-bottom: 1px solid var(--border); }
+  .admin-table thead th { color: var(--accent); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
+  .admin-table td { color: var(--text-dim); }
+  .admin-table td:first-child { color: var(--text); font-weight: 600; }
+  .admin-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+  .admin-empty { color: var(--text-dim); font-size: 14.5px; text-align: center; padding: 24px 0; }
+  .admin-back { display: inline-block; margin-bottom: 24px; color: var(--text-dim); font-size: 14px; }
+  .admin-back:hover { color: var(--accent); }
+  @media (max-width: 960px) { .stat-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 640px) { .stat-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<main class="admin-main">
+  <a class="admin-back" href="index.html">← Volver al sitio</a>
+  <div class="admin-head">
+    <h1>iPhone<span>Culture</span> · Admin</h1>
+    <div class="admin-actions">
+      <button class="btn btn-outline btn-sm" id="btnJson">Exportar JSON</button>
+      <button class="btn btn-outline btn-sm" id="btnCsv">Exportar CSV</button>
+      <button class="btn btn-ghost btn-sm" id="btnClear">Borrar datos</button>
+    </div>
+  </div>
+  <p class="admin-note">⚠️ Datos locales de este navegador — para analytics central se necesita backend.</p>
+
+  <div class="stat-grid">
+    <div class="stat-card"><div class="stat-num" id="stTotal">0</div><div class="stat-label">Visitas totales</div></div>
+    <div class="stat-card"><div class="stat-num" id="stHoy">0</div><div class="stat-label">Visitas hoy</div></div>
+    <div class="stat-card"><div class="stat-num" id="st7d">0</div><div class="stat-label">Últimos 7 días</div></div>
+    <div class="stat-card"><div class="stat-num" id="stConv">0</div><div class="stat-label">Conversiones</div></div>
+  </div>
+
+  <div class="admin-panel">
+    <h2>Visitas por día (últimos 14 días)</h2>
+    <div class="chart" id="chart"></div>
+  </div>
+
+  <div class="admin-panel">
+    <h2>Fuentes de tráfico (referrers)</h2>
+    <div class="ref-list" id="refs"></div>
+  </div>
+
+  <div class="admin-panel">
+    <h2>Eventos de conversión por tipo</h2>
+    <div class="conv-list" id="convs"></div>
+  </div>
+
+  <div class="admin-panel">
+    <h2>Últimos leads</h2>
+    <div class="admin-table-wrap">
+      <table class="admin-table">
+        <thead><tr><th>Nombre</th><th>Teléfono</th><th>Tipo</th><th>Detalle</th><th>Fecha</th></tr></thead>
+        <tbody id="leadsBody"></tbody>
+      </table>
+    </div>
+    <p class="admin-empty" id="leadsEmpty" hidden>Todavía no hay leads registrados en este navegador.</p>
+  </div>
+</main>
+
+<script src="assets/js/admin.js" defer></script>
+</body>
+</html>

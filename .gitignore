@@ -1,0 +1,5 @@
+data/*
+!data/.gitkeep
+.DS_Store
+node_modules/
+preview-*.png
