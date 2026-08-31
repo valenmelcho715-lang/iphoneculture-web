@@ -198,6 +198,15 @@ img, iframe { max-width: 100%; }
 .select:focus, .input:focus { outline: none; border-color: var(--accent); }
 .ti-verdict { text-align: center; }
 .ti-stars { font-size: 26px; color: var(--accent); letter-spacing: 4px; margin-bottom: 12px; }
+.ti-price {
+  font-size: 42px; font-weight: 800; letter-spacing: -0.02em; color: var(--accent);
+  margin-bottom: 12px; line-height: 1.1;
+}
+.ti-breakdown {
+  font-size: 13px; color: var(--text-dim); max-width: 560px;
+  margin: 0 auto 14px; line-height: 1.6;
+}
+.chip-other { border-style: dashed; }
 .ti-text { font-size: 17px; font-weight: 600; margin-bottom: 14px; }
 .ti-disclaimer { font-size: 12.5px; color: var(--text-dim); margin-bottom: 22px; }
 .ti-hint { font-size: 13px; color: var(--text-dim); margin-top: 6px; }

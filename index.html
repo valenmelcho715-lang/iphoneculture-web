@@ -282,7 +282,7 @@
     <div class="section-head reveal">
       <p class="eyebrow">Trade-in</p>
       <h2>Tu iPhone actual vale plata</h2>
-      <p class="section-sub">Entregás tu usado como parte de pago y te llevás el siguiente: iPhone, Mac, iPad, Apple Watch o Samsung gama alta. Completá los pasos y te armamos el mensaje listo para enviar por WhatsApp.</p>
+      <p class="section-sub">Entregás tu usado como parte de pago y te llevás el siguiente: iPhone, Samsung, Motorola, Xiaomi, Mac, iPad o Apple Watch. Cotización exacta al instante según nuestra lista oficial — y si tu equipo no figura, te lo cotizamos igual por WhatsApp.</p>
     </div>
     <div class="tradein-widget ti-stepper reveal" id="tiStepper">
       <div class="hp" aria-hidden="true">
@@ -293,7 +293,7 @@
       <ol class="ti-progress" aria-label="Pasos de la cotización">
         <li class="ti-step-dot active" data-dot="1">1 · Equipo</li>
         <li class="ti-step-dot" data-dot="2">2 · Estado</li>
-        <li class="ti-step-dot" data-dot="3">3 · Accesorios</li>
+        <li class="ti-step-dot" data-dot="3">3 · Tus datos</li>
         <li class="ti-step-dot" data-dot="4">4 · Resultado</li>
       </ol>
 
@@ -309,24 +309,26 @@
         </div>
       </div>
 
-      <div class="ti-pane" data-pane="2" role="group" aria-label="Paso 2: contanos el estado" hidden>
-        <p class="config-label">¿Cómo está la batería?</p>
-        <div class="chip-row" id="tiBattery"></div>
-        <p class="config-label">¿Cómo está la pantalla?</p>
-        <div class="chip-row" id="tiScreen"></div>
-        <p class="config-label">¿Cómo está el cuerpo / marco?</p>
-        <div class="chip-row" id="tiBody"></div>
+      <div class="ti-pane" data-pane="2" role="group" aria-label="Paso 2: capacidad y estado" hidden>
+        <div id="tiStorageWrap">
+          <p class="config-label" id="tiStorageLabel">¿Qué capacidad tiene?</p>
+          <div class="chip-row" id="tiStorage"></div>
+        </div>
+        <div id="tiBatteryWrap">
+          <p class="config-label">¿Cómo está la batería?</p>
+          <div class="chip-row" id="tiBattery"></div>
+        </div>
+        <div id="tiEstadoWrap">
+          <p class="config-label">¿En qué estado está?</p>
+          <div class="chip-row" id="tiEstado"></div>
+        </div>
         <div class="ti-nav">
           <button type="button" class="btn btn-ghost" id="tiBack2">← Atrás</button>
           <button type="button" class="btn btn-outline" id="tiNext2" disabled aria-disabled="true">Siguiente →</button>
         </div>
       </div>
 
-      <div class="ti-pane" data-pane="3" role="group" aria-label="Paso 3: accesorios y caja" hidden>
-        <p class="config-label">¿Tenés la caja original?</p>
-        <div class="chip-row" id="tiBox"></div>
-        <p class="config-label">¿Qué accesorios incluye?</p>
-        <div class="chip-row chip-multi" id="tiAccs"></div>
+      <div class="ti-pane" data-pane="3" role="group" aria-label="Paso 3: tus datos" hidden>
         <div class="ti-fields">
           <label class="config-label" for="tiName">Tu nombre (opcional)</label>
           <input type="text" id="tiName" class="input" placeholder="Ej: Martina" autocomplete="name">
@@ -335,19 +337,21 @@
         </div>
         <div class="ti-nav">
           <button type="button" class="btn btn-ghost" id="tiBack3">← Atrás</button>
-          <button type="button" class="btn btn-outline" id="tiNext3" disabled aria-disabled="true">Ver resultado →</button>
+          <button type="button" class="btn btn-outline" id="tiNext3">Ver mi cotización →</button>
         </div>
       </div>
 
       <div class="ti-pane" data-pane="4" role="group" aria-label="Paso 4: resultado de la cotización" hidden>
         <div class="ti-verdict">
           <div class="ti-stars" id="tiStars" aria-live="polite"></div>
+          <p class="ti-price" id="tiPrice" aria-live="polite"></p>
           <p class="ti-text" id="tiText"></p>
+          <p class="ti-breakdown" id="tiBreakdown"></p>
           <p class="ti-summary" id="tiSummary"></p>
-          <p class="ti-disclaimer">Referencia orientativa, sin montos — la cotización final se confirma con una revisión rápida en el local o por fotos y video.</p>
+          <p class="ti-disclaimer">Cotización de toma según lista oficial vigente al 31/08/2026. Si tu equipo no figura en la lista, te lo cotizamos igual por WhatsApp. El valor final se confirma con una revisión rápida en el local o por fotos y video.</p>
           <div class="ti-nav ti-nav-center">
             <button type="button" class="btn btn-ghost" id="tiRestart">↺ Empezar de nuevo</button>
-            <a class="btn btn-wa btn-lg" id="tiWa" href="#" target="_blank" rel="noopener">Cotizar mi usado por WhatsApp</a>
+            <a class="btn btn-wa btn-lg" id="tiWa" href="#" target="_blank" rel="noopener">Enviar cotización por WhatsApp</a>
           </div>
         </div>
       </div>
@@ -481,7 +485,7 @@
     <div class="section-head reveal">
       <p class="eyebrow">Calculadora de cuotas</p>
       <h2>¿Cuánto te queda por mes?</h2>
-      <p class="section-sub">Combiná modelo, capacidad y tu usado en canje, y mirá al instante tu cuota estimada en 12 cuotas fijas.</p>
+      <p class="section-sub">Combiná modelo, capacidad, tu usado en canje (valores de lista oficial) y el plan que elijas: de 1 a 12 cuotas fijas.</p>
     </div>
     <div class="calc-widget reveal" id="calcWidget">
       <div class="calc-form">
@@ -512,6 +516,16 @@
         </div>
 
         <p class="calc-crosslink">¿Querés una cotización de canje exacta? <a href="#tradein">Usá el cotizador de trade-in →</a></p>
+
+        <p class="config-label">4 · Plan de cuotas</p>
+        <div class="chip-row" id="calcPlanes" role="radiogroup" aria-label="Elegí el plan de cuotas">
+          <button type="button" class="chip" data-plan="1" aria-pressed="false">1 pago</button>
+          <button type="button" class="chip" data-plan="2" aria-pressed="false">2 cuotas</button>
+          <button type="button" class="chip" data-plan="3" aria-pressed="false">3 cuotas</button>
+          <button type="button" class="chip" data-plan="6" aria-pressed="false">6 cuotas</button>
+          <button type="button" class="chip" data-plan="9" aria-pressed="false">9 cuotas</button>
+          <button type="button" class="chip active" data-plan="12" aria-pressed="true">12 cuotas</button>
+        </div>
       </div>
 
       <div class="calc-result" aria-live="polite">
@@ -521,12 +535,12 @@
           <div class="calc-row calc-row-final"><span>Precio final</span><strong id="calcFinal">—</strong></div>
         </div>
         <div class="calc-cuota-box">
-          <p class="calc-cuota-label">12 cuotas fijas de</p>
+          <p class="calc-cuota-label" id="calcCuotaLabel">12 cuotas fijas de</p>
           <p class="calc-cuota" id="calcCuota">—</p>
           <p class="calc-alt" id="calcAlt">—</p>
         </div>
         <p class="calc-urgency">⏳ Cotización válida por 7 días.</p>
-        <p class="calc-disclaimer">Precios referenciales — confirmá precio del día y disponibilidad por WhatsApp.</p>
+        <p class="calc-disclaimer">Planes oficiales de 1 a 12 cuotas con recargo según tabla vigente. Promo contado / transferencia = precio más bajo del catálogo. Precios referenciales — confirmá precio del día y disponibilidad por WhatsApp.</p>
         <a class="btn btn-wa btn-lg" id="calcWa" href="#" target="_blank" rel="noopener">Quiero este plan</a>
       </div>
     </div>

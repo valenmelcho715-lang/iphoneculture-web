@@ -312,159 +312,192 @@
     var stepper = document.getElementById("tiStepper");
     if (!stepper) return;
 
+    /* ===== Lista oficial de canjes vigente al 31/08/2026 (valores en USD) ===== */
+    function M(label, usd) { return { label: label, usd: usd }; }
+    var PRICE_CATS = {
+      iphone: { label: "iPhone", kind: "iphone", models: [
+        M("iPhone XR", 30), M("iPhone 11", 90), M("iPhone 11 Pro", 150), M("iPhone 11 Pro Max", 170),
+        M("iPhone 12", 130), M("iPhone 12 Pro", 190), M("iPhone 12 Pro Max", 210),
+        M("iPhone 13", 180), M("iPhone 13 Pro", 240), M("iPhone 13 Pro Max", 260),
+        M("iPhone 14", 280), M("iPhone 14 Plus", 300), M("iPhone 14 Pro", 350), M("iPhone 14 Pro Max", 380),
+        M("iPhone 15", 400), M("iPhone 15 Plus", 430), M("iPhone 15 Pro", 500), M("iPhone 15 Pro Max", 540),
+        M("iPhone 16", 440), M("iPhone 16 Plus", 470), M("iPhone 16 Pro", 540), M("iPhone 16 Pro Max", 600)
+      ] },
+      samsung: { label: "Samsung", kind: "android", models: [
+        M("Galaxy A14", 70), M("Galaxy A15", 85), M("Galaxy A23", 95), M("Galaxy A24", 110),
+        M("Galaxy A32", 120), M("Galaxy A33", 135), M("Galaxy A34", 155), M("Galaxy A35", 175),
+        M("Galaxy A52", 175), M("Galaxy A53", 200), M("Galaxy A54", 230), M("Galaxy A55", 270),
+        M("Galaxy S20", 200), M("Galaxy S20+", 220), M("Galaxy S20 Ultra", 250),
+        M("Galaxy S21", 260), M("Galaxy S21+", 300), M("Galaxy S21 Ultra", 340),
+        M("Galaxy S22", 320), M("Galaxy S22+", 370), M("Galaxy S22 Ultra", 420),
+        M("Galaxy S23", 400), M("Galaxy S23+", 460), M("Galaxy S23 Ultra", 520),
+        M("Galaxy S24", 480), M("Galaxy S24+", 540), M("Galaxy S24 Ultra", 600),
+        M("Galaxy S25", 560), M("Galaxy S25+", 630), M("Galaxy S25 Ultra", 720)
+      ] },
+      motorola: { label: "Motorola", kind: "android", models: [
+        M("Moto G14", 70), M("Moto G23", 85), M("Moto G32", 100), M("Moto G52", 120),
+        M("Moto G53", 140), M("Moto G54", 170), M("Moto G73", 190), M("Moto G84", 220),
+        M("Edge 20", 200), M("Edge 30", 240), M("Edge 30 Pro", 300),
+        M("Edge 40", 280), M("Edge 40 Pro", 360),
+        M("Edge 50", 320), M("Edge 50 Pro", 420), M("Edge 50 Ultra", 520)
+      ] },
+      xiaomi: { label: "Xiaomi", kind: "android", models: [
+        M("Redmi 10", 80), M("Redmi 12", 80),
+        M("Redmi Note 10", 120), M("Redmi Note 11", 150), M("Redmi Note 12", 180),
+        M("Redmi Note 12 Pro", 230), M("Redmi Note 13", 210), M("Redmi Note 13 Pro", 260), M("Redmi Note 13 Pro+", 300),
+        M("Mi 11", 260), M("Mi 12", 320), M("Mi 12 Pro", 360),
+        M("Xiaomi 13", 420), M("Xiaomi 13 Pro", 480),
+        M("Xiaomi 14", 500), M("Xiaomi 14 Pro", 560), M("Xiaomi 14 Ultra", 650)
+      ] }
+    };
     var CATS = [
       { id: "iphone", label: "iPhone" },
+      { id: "samsung", label: "Samsung" },
+      { id: "motorola", label: "Motorola" },
+      { id: "xiaomi", label: "Xiaomi" },
       { id: "mac", label: "Mac" },
       { id: "ipad", label: "iPad" },
       { id: "watch", label: "Apple Watch" },
-      { id: "samsung", label: "Samsung (gama alta)" }
+      { id: "otro", label: "Otro equipo" }
     ];
-    var MODELS_BY_CAT = {
-      iphone: [
-        { label: "iPhone 16 Pro / Pro Max", t: 5 },
-        { label: "iPhone 16 / 16 Plus", t: 5 },
-        { label: "iPhone 15 Pro / Pro Max", t: 5 },
-        { label: "iPhone 15 / 15 Plus", t: 4 },
-        { label: "iPhone 14 Pro / Pro Max", t: 4 },
-        { label: "iPhone 14 / 14 Plus", t: 3 },
-        { label: "iPhone 13 Pro / Pro Max", t: 3 },
-        { label: "iPhone 13 / 13 mini", t: 2 },
-        { label: "iPhone 12 (toda la línea)", t: 2 },
-        { label: "iPhone 11 (toda la línea)", t: 1 },
-        { label: "iPhone X / XR / XS", t: 1 }
-      ],
-      mac: [
-        { label: "MacBook Pro M4", t: 5 },
-        { label: "MacBook Air M4", t: 5 },
-        { label: "MacBook Pro M3", t: 4 },
-        { label: "MacBook Air M3", t: 4 },
-        { label: "MacBook Pro M2", t: 4 },
-        { label: "MacBook Air M2", t: 3 },
-        { label: "MacBook Air / Pro M1", t: 3 },
-        { label: "iMac M3 / M4", t: 4 },
-        { label: "iMac M1", t: 2 },
-        { label: "Mac mini M2 / M4", t: 3 },
-        { label: "Mac Studio", t: 4 }
-      ],
-      ipad: [
-        { label: "iPad Pro M4", t: 5 },
-        { label: "iPad Pro M2", t: 4 },
-        { label: "iPad Air M2 / M3", t: 4 },
-        { label: "iPad Air (gen anterior)", t: 3 },
-        { label: "iPad Pro M1", t: 3 },
-        { label: "iPad 10ª gen", t: 2 },
-        { label: "iPad mini 6 / 7", t: 2 },
-        { label: "iPad 9ª gen o anterior", t: 1 }
-      ],
-      watch: [
-        { label: "Apple Watch Ultra 2", t: 5 },
-        { label: "Apple Watch Ultra", t: 4 },
-        { label: "Apple Watch Series 10", t: 4 },
-        { label: "Apple Watch Series 9", t: 3 },
-        { label: "Apple Watch Series 8", t: 2 },
-        { label: "Apple Watch SE 2", t: 2 },
-        { label: "Series 7 o anterior", t: 1 }
-      ],
-      samsung: [
-        { label: "Galaxy S26 Ultra", t: 5 },
-        { label: "Galaxy S25 Ultra", t: 5 },
-        { label: "Galaxy S24 Ultra", t: 4 },
-        { label: "Galaxy S23 Ultra", t: 3 },
-        { label: "Galaxy Z Fold 7 / 6", t: 4 },
-        { label: "Galaxy Z Fold 5", t: 3 },
-        { label: "Galaxy Z Flip 6 / 7", t: 3 },
-        { label: "Galaxy Z Flip 5", t: 2 }
-      ]
-    };
+    var MANUAL_IDS = { mac: 1, ipad: 1, watch: 1, otro: 1 };
+
+    var STORAGE_IPHONE = [
+      { label: "Capacidad base", v: 0 },
+      { label: "128 GB", v: 20 },
+      { label: "256 GB", v: 40 },
+      { label: "512 GB", v: 70 },
+      { label: "1 TB", v: 100 }
+    ];
+    var STORAGE_ANDROID = [
+      { label: "Capacidad base", v: 0 },
+      { label: "256 GB", v: 50 },
+      { label: "512 GB", v: 80 },
+      { label: "1 TB", v: 120 }
+    ];
     var BATTERY = [
-      { label: "90% o más de salud", m: 1.0 },
-      { label: "Entre 80% y 89%", m: 0.9 },
-      { label: "Menos de 80%", m: 0.75 }
+      { label: "90% o más", v: 0 },
+      { label: "85–89%", v: -30 },
+      { label: "80–84%", v: -60 },
+      { label: "Menos de 80% o sin dato", v: -100 }
     ];
-    var SCREEN = [
-      { label: "Perfecta, sin marcas", m: 1.0 },
-      { label: "Rayones leves", m: 0.9 },
-      { label: "Vidrio roto / a revisar", m: 0.6 }
+    var ESTADO_IPHONE = [
+      { label: "Excelente", v: 0 },
+      { label: "Detalles leves", v: -20 },
+      { label: "Golpes visibles", v: -50 },
+      { label: "Pantalla dañada", v: -70 }
     ];
-    var BODY = [
-      { label: "Impecable", m: 1.0 },
-      { label: "Marcas mínimas de uso", m: 0.9 },
-      { label: "Marcas visibles / golpes", m: 0.7 }
+    var ESTADO_ANDROID = [
+      { label: "Excelente", v: 0 },
+      { label: "Detalles leves", v: -20 },
+      { label: "Marco golpeado", v: -30 },
+      { label: "Pantalla rayada", v: -40 },
+      { label: "Pantalla no original", v: -80 },
+      { label: "Falla de display/touch", v: "reject" }
     ];
-    var BOX = [
-      { label: "Sí, tengo la caja", m: 1.0 },
-      { label: "No tengo la caja", m: 0.95 }
-    ];
-    var ACCS = ["Cable", "Cargador", "Auriculares", "Fundas", "Factura de compra"];
+    var ANDROID_FIXED = -65;
 
-    var TI_VERDICTS = {
-      5: "¡Excelente candidato! Tu equipo está en la gama que más cotiza. Suele representar una parte muy importante del valor de tu próximo iPhone.",
-      4: "Muy buen candidato para trade-in. Tu equipo mantiene un valor alto y puede bajar mucho el precio de tu próximo iPhone.",
-      3: "Buen candidato para trade-in. Todavía tiene un valor interesante como parte de pago.",
-      2: "Tu equipo puede sumar como parte de pago. La cotización depende bastante del estado, así que vale la pena revisarlo.",
-      1: "Podemos recibirlo como parte de pago, aunque su valor es más acotado. Lo revisamos y te damos una cotización honesta."
-    };
+    var fmtUSDv = new Intl.NumberFormat("es-AR", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 
-    var state = { cat: null, catId: null, model: null, battery: null, screen: null, body: null, box: null, accs: [], name: "", note: "" };
+    var state = { catId: null, cat: null, kind: null, manual: false, model: null, storage: null, battery: null, estado: null, name: "", note: "" };
     var currentStep = 1;
 
-    function buildChips(containerId, items, multi) {
+    function buildChips(containerId, items) {
       var c = document.getElementById(containerId);
       if (!c) return;
       items.forEach(function (item) {
         var b = document.createElement("button");
         b.type = "button";
         b.className = "chip";
-        b.textContent = item.label || item;
+        b.textContent = item.label;
         b.setAttribute("aria-pressed", "false");
         if (item.id) b.setAttribute("data-id", item.id);
-        if (item.t !== undefined) b.setAttribute("data-t", item.t);
-        if (item.m !== undefined) b.setAttribute("data-m", item.m);
+        if (item.v !== undefined) b.setAttribute("data-v", String(item.v));
         c.appendChild(b);
       });
-      if (multi) {
-        c.addEventListener("click", function (e) {
-          var btn = e.target.closest(".chip");
-          if (!btn) return;
-          btn.classList.toggle("active");
-          btn.setAttribute("aria-pressed", btn.classList.contains("active") ? "true" : "false");
-          state.accs = [];
-          c.querySelectorAll(".chip.active").forEach(function (x) { state.accs.push(x.textContent); });
-          updateNext(3);
-        });
-      }
     }
 
-    buildChips("tiCats", CATS, false);
-    buildChips("tiBattery", BATTERY, false);
-    buildChips("tiScreen", SCREEN, false);
-    buildChips("tiBody", BODY, false);
-    buildChips("tiBox", BOX, false);
-    buildChips("tiAccs", ACCS, true);
+    buildChips("tiCats", CATS);
 
     var tiModelsEl = document.getElementById("tiModels");
     var tiCatHint = document.getElementById("tiCatHint");
+    var tiBatteryWrap = document.getElementById("tiBatteryWrap");
+    var tiStorageWrap = document.getElementById("tiStorageWrap");
+    var tiStorageEl = document.getElementById("tiStorage");
+    var tiEstadoEl = document.getElementById("tiEstado");
+    var tiStorageLabel = document.getElementById("tiStorageLabel");
 
-    function renderModels(catId) {
+    function renderModels() {
       if (!tiModelsEl) return;
       tiModelsEl.innerHTML = "";
-      (MODELS_BY_CAT[catId] || []).forEach(function (item) {
+      state.model = null;
+      if (state.manual) {
+        if (tiCatHint) {
+          tiCatHint.textContent = "Este tipo de equipo se cotiza con valuación manual: completá los pasos y te armamos el mensaje para WhatsApp.";
+          tiCatHint.style.display = "";
+        }
+        state.model = { label: state.cat + " (a definir modelo)", usd: null };
+        updateNext(1);
+        return;
+      }
+      var catObj = PRICE_CATS[state.catId];
+      catObj.models.forEach(function (item) {
         var b = document.createElement("button");
         b.type = "button";
         b.className = "chip";
         b.textContent = item.label;
         b.setAttribute("aria-pressed", "false");
-        b.setAttribute("data-t", item.t);
+        b.setAttribute("data-usd", item.usd);
         tiModelsEl.appendChild(b);
       });
+      var other = document.createElement("button");
+      other.type = "button";
+      other.className = "chip chip-other";
+      other.textContent = "Mi modelo no figura en la lista";
+      other.setAttribute("aria-pressed", "false");
+      other.setAttribute("data-usd", "manual");
+      tiModelsEl.appendChild(other);
       if (tiCatHint) tiCatHint.style.display = "none";
+    }
+
+    function renderStep2() {
+      if (!tiStorageEl || !tiEstadoEl) return;
+      tiStorageEl.innerHTML = "";
+      tiEstadoEl.innerHTML = "";
+      state.storage = null;
+      state.battery = null;
+      state.estado = null;
+      var isIphone = state.kind === "iphone";
+      var storageList = isIphone ? STORAGE_IPHONE : STORAGE_ANDROID;
+      var estadoList = isIphone ? ESTADO_IPHONE : ESTADO_ANDROID;
+      if (tiStorageLabel) tiStorageLabel.textContent = "¿Qué capacidad tiene?";
+      storageList.forEach(function (item) {
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "chip";
+        b.textContent = item.v > 0 ? item.label + " (+" + fmtUSDv.format(item.v) + ")" : item.label;
+        b.setAttribute("aria-pressed", "false");
+        b.setAttribute("data-v", item.v);
+        tiStorageEl.appendChild(b);
+      });
+      estadoList.forEach(function (item) {
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "chip";
+        b.textContent = item.label;
+        b.setAttribute("aria-pressed", "false");
+        b.setAttribute("data-v", String(item.v));
+        tiEstadoEl.appendChild(b);
+      });
+      if (tiBatteryWrap) tiBatteryWrap.style.display = isIphone ? "" : "none";
     }
 
     bindChipRow(document.getElementById("tiCats"), function (btn) {
       state.cat = btn.textContent;
       state.catId = btn.getAttribute("data-id") || null;
-      state.model = null;
-      renderModels(state.catId);
+      state.manual = !!MANUAL_IDS[state.catId];
+      state.kind = state.manual ? null : PRICE_CATS[state.catId].kind;
+      renderModels();
       updateNext(1);
     });
     if (tiModelsEl) {
@@ -477,26 +510,51 @@
         });
         btn.classList.add("active");
         btn.setAttribute("aria-pressed", "true");
-        state.model = { label: btn.textContent, t: parseFloat(btn.getAttribute("data-t")) };
+        var usd = btn.getAttribute("data-usd");
+        if (usd === "manual") {
+          state.model = { label: btn.textContent.replace("Mi modelo no figura en la lista", "Modelo no listado"), usd: null };
+          state.manualModel = true;
+        } else {
+          state.model = { label: btn.textContent, usd: parseFloat(usd) };
+          state.manualModel = false;
+        }
         updateNext(1);
       });
     }
+    if (tiStorageEl) {
+      tiStorageEl.addEventListener("click", function (e) {
+        var btn = e.target.closest(".chip");
+        if (!btn) return;
+        tiStorageEl.querySelectorAll(".chip").forEach(function (x) {
+          x.classList.remove("active");
+          x.setAttribute("aria-pressed", "false");
+        });
+        btn.classList.add("active");
+        btn.setAttribute("aria-pressed", "true");
+        state.storage = { label: btn.textContent, v: parseFloat(btn.getAttribute("data-v")) };
+        updateNext(2);
+      });
+    }
+    buildChips("tiBattery", BATTERY);
     bindChipRow(document.getElementById("tiBattery"), function (btn) {
-      state.battery = { label: btn.textContent, m: parseFloat(btn.getAttribute("data-m")) };
+      state.battery = { label: btn.textContent, v: parseFloat(btn.getAttribute("data-v")) };
       updateNext(2);
     });
-    bindChipRow(document.getElementById("tiScreen"), function (btn) {
-      state.screen = { label: btn.textContent, m: parseFloat(btn.getAttribute("data-m")) };
-      updateNext(2);
-    });
-    bindChipRow(document.getElementById("tiBody"), function (btn) {
-      state.body = { label: btn.textContent, m: parseFloat(btn.getAttribute("data-m")) };
-      updateNext(2);
-    });
-    bindChipRow(document.getElementById("tiBox"), function (btn) {
-      state.box = { label: btn.textContent, m: parseFloat(btn.getAttribute("data-m")) };
-      updateNext(3);
-    });
+    if (tiEstadoEl) {
+      tiEstadoEl.addEventListener("click", function (e) {
+        var btn = e.target.closest(".chip");
+        if (!btn) return;
+        tiEstadoEl.querySelectorAll(".chip").forEach(function (x) {
+          x.classList.remove("active");
+          x.setAttribute("aria-pressed", "false");
+        });
+        btn.classList.add("active");
+        btn.setAttribute("aria-pressed", "true");
+        var v = btn.getAttribute("data-v");
+        state.estado = { label: btn.textContent, v: v === "reject" ? "reject" : parseFloat(v) };
+        updateNext(2);
+      });
+    }
 
     var next1 = document.getElementById("tiNext1");
     var next2 = document.getElementById("tiNext2");
@@ -510,8 +568,12 @@
 
     function updateNext(step) {
       if (step === 1) setBtn(next1, !!(state.cat && state.model));
-      if (step === 2) setBtn(next2, !!(state.battery && state.screen && state.body));
-      if (step === 3) setBtn(next3, !!state.box);
+      if (step === 2) {
+        if (state.manual || state.manualModel) { setBtn(next2, true); return; }
+        var needBattery = state.kind === "iphone";
+        setBtn(next2, !!(state.storage && state.estado && (!needBattery || state.battery)));
+      }
+      if (step === 3) setBtn(next3, true);
     }
 
     var tiName = document.getElementById("tiName");
@@ -521,6 +583,21 @@
 
     function goTo(step) {
       currentStep = step;
+      if (step === 2) {
+        if (state.manual || state.manualModel) {
+          if (tiStorageWrap) tiStorageWrap.style.display = "none";
+          if (tiBatteryWrap) tiBatteryWrap.style.display = "none";
+          var estWrap = document.getElementById("tiEstadoWrap");
+          if (estWrap) estWrap.style.display = "none";
+          setBtn(next2, true);
+        } else {
+          if (tiStorageWrap) tiStorageWrap.style.display = "";
+          var estWrap2 = document.getElementById("tiEstadoWrap");
+          if (estWrap2) estWrap2.style.display = "";
+          renderStep2();
+        }
+      }
+      if (step === 3) setBtn(next3, true);
       stepper.querySelectorAll(".ti-pane").forEach(function (p) {
         p.hidden = p.getAttribute("data-pane") !== String(step);
       });
@@ -534,43 +611,75 @@
       if (firstChip && step > 1) firstChip.focus({ preventScroll: true });
     }
 
-    function tiVerdictFor(score) {
-      var tier = score >= 4.25 ? 5 : score >= 3.4 ? 4 : score >= 2.55 ? 3 : score >= 1.7 ? 2 : 1;
-      var stars = "★★★★★".slice(0, tier) + "☆☆☆☆☆".slice(0, 5 - tier);
-      return { tier: tier, stars: stars };
+    function computePrice() {
+      /* Fórmula oficial: Valor Final = Base + Ajuste Storage + Ajuste Batería/Estado (−65 fijo en Android). Piso USD 0. */
+      var total = state.model.usd + state.storage.v;
+      if (state.kind === "iphone") total += state.battery.v + state.estado.v;
+      else total += state.estado.v + ANDROID_FIXED;
+      return Math.max(0, Math.round(total));
     }
 
     function renderResult() {
-      if (!state.cat || !state.model || !state.battery || !state.screen || !state.body || !state.box) return;
-      var score = state.model.t * state.battery.m * state.screen.m * state.body.m * state.box.m;
-      var v = tiVerdictFor(score);
       var tiStars = document.getElementById("tiStars");
       var tiText = document.getElementById("tiText");
       var tiSummary = document.getElementById("tiSummary");
+      var tiPrice = document.getElementById("tiPrice");
+      var tiBreakdown = document.getElementById("tiBreakdown");
       var tiWa = document.getElementById("tiWa");
-      if (tiStars) tiStars.textContent = v.stars;
-      if (tiText) tiText.textContent = TI_VERDICTS[v.tier];
-      var accsTxt = state.accs.length ? state.accs.join(", ") : "sin accesorios extra";
       var equipoTxt = state.cat + " · " + state.model.label;
-      if (tiSummary) {
-        tiSummary.textContent = equipoTxt + " · Batería: " + state.battery.label +
-          " · Pantalla: " + state.screen.label + " · Cuerpo: " + state.body.label +
-          " · " + state.box.label + " · " + accsTxt;
+      var isManual = state.manual || state.manualModel;
+      var rejected = !isManual && state.estado && state.estado.v === "reject";
+      var price = !isManual && !rejected ? computePrice() : null;
+
+      var summaryParts = [equipoTxt];
+      if (!isManual && !rejected) {
+        summaryParts.push("Capacidad: " + state.storage.label);
+        if (state.kind === "iphone") summaryParts.push("Batería: " + state.battery.label);
+        summaryParts.push("Estado: " + state.estado.label);
       }
-      if (tiWa) {
-        var msg = "Hola iPhone Culture!" + (state.name ? " Soy " + state.name + "." : "") +
-          " Quiero cotizar mi usado para trade-in:\n" +
+      if (tiSummary) tiSummary.textContent = summaryParts.join(" · ");
+
+      if (tiStars) tiStars.style.display = "none";
+
+      var msg;
+      if (rejected) {
+        if (tiPrice) tiPrice.textContent = "No cotiza";
+        if (tiText) tiText.textContent = "Con falla de display o touch el equipo no entra en canje según nuestra lista oficial. Igual escribinos: podemos ofrecerte repararlo con garantía o evaluar opciones alternativas.";
+        if (tiBreakdown) tiBreakdown.textContent = "";
+        msg = "Hola iPhone Culture!" + (state.name ? " Soy " + state.name + "." : "") +
+          " Consulté el cotizador de trade-in y mi equipo no cotiza por falla de display/touch:\n" +
+          "• Equipo: " + equipoTxt +
+          "\n¿Me pasan opciones? (reparación u otras alternativas)";
+      } else if (isManual) {
+        if (tiPrice) tiPrice.textContent = "Valuación manual";
+        if (tiText) tiText.textContent = "Tu equipo no está en la lista automática, pero lo tomamos igual: te lo cotizamos de forma manual y personalizada por WhatsApp, sin compromiso.";
+        if (tiBreakdown) tiBreakdown.textContent = "";
+        msg = "Hola iPhone Culture!" + (state.name ? " Soy " + state.name + "." : "") +
+          " Quiero cotizar mi usado para trade-in (valuación manual):\n" +
+          "• Equipo: " + equipoTxt;
+      } else {
+        var lines = ["Base " + state.model.label + ": " + fmtUSDv.format(state.model.usd)];
+        if (state.storage.v > 0) lines.push("Storage: +" + fmtUSDv.format(state.storage.v));
+        if (state.kind === "iphone") {
+          if (state.battery.v < 0) lines.push("Batería (" + state.battery.label + "): −" + fmtUSDv.format(-state.battery.v).replace(/^−/, ""));
+        } else {
+          lines.push("Ajuste fijo sistema Android: −" + fmtUSDv.format(-ANDROID_FIXED));
+        }
+        if (state.estado.v < 0) lines.push("Estado (" + state.estado.label + "): −" + fmtUSDv.format(-state.estado.v));
+        if (tiPrice) tiPrice.textContent = "≈ " + fmtUSDv.format(price);
+        if (tiText) tiText.textContent = "Valor de toma estimado según lista oficial vigente al 31/08/2026. Se confirma con una revisión rápida en el local o por fotos y video.";
+        if (tiBreakdown) tiBreakdown.textContent = lines.join(" · ");
+        msg = "Hola iPhone Culture!" + (state.name ? " Soy " + state.name + "." : "") +
+          " Quiero confirmar el trade-in de mi usado:\n" +
           "• Equipo: " + equipoTxt + "\n" +
-          "• Batería: " + state.battery.label + "\n" +
-          "• Pantalla: " + state.screen.label + "\n" +
-          "• Cuerpo: " + state.body.label + "\n" +
-          "• Caja: " + state.box.label + "\n" +
-          "• Accesorios: " + accsTxt;
-        if (state.note) msg += "\n• Comentario: " + state.note;
-        msg += "\n¿Me pasan una cotización?";
-        state.msg = msg;
-        tiWa.setAttribute("href", waLink(msg));
+          "• Capacidad: " + state.storage.label + "\n" +
+          (state.kind === "iphone" ? "• Batería: " + state.battery.label + "\n" : "") +
+          "• Estado: " + state.estado.label + "\n" +
+          "• Valor estimado web: " + fmtUSDv.format(price) + " (según lista oficial)";
       }
+      if (state.note) msg += "\n• Comentario: " + state.note;
+      state.msg = msg;
+      if (tiWa) tiWa.setAttribute("href", waLink(msg));
     }
 
     if (next1) next1.addEventListener("click", function () { if (state.model) goTo(2); });
@@ -582,13 +691,18 @@
     if (back3) back3.addEventListener("click", function () { goTo(2); });
     var restart = document.getElementById("tiRestart");
     if (restart) restart.addEventListener("click", function () {
-      state = { cat: null, catId: null, model: null, battery: null, screen: null, body: null, box: null, accs: [], name: "", note: "" };
+      state = { catId: null, cat: null, kind: null, manual: false, manualModel: false, model: null, storage: null, battery: null, estado: null, name: "", note: "" };
       stepper.querySelectorAll(".chip").forEach(function (c) {
         c.classList.remove("active");
         c.setAttribute("aria-pressed", "false");
       });
       if (tiModelsEl) tiModelsEl.innerHTML = "";
-      if (tiCatHint) tiCatHint.style.display = "";
+      if (tiStorageEl) tiStorageEl.innerHTML = "";
+      if (tiEstadoEl) tiEstadoEl.innerHTML = "";
+      if (tiCatHint) {
+        tiCatHint.textContent = "Elegí primero el tipo de equipo.";
+        tiCatHint.style.display = "";
+      }
       if (tiName) tiName.value = "";
       if (tiNote) tiNote.value = "";
       setBtn(next1, false); setBtn(next2, false); setBtn(next3, false);
@@ -1269,32 +1383,55 @@
       { gb: 512, mult: 1.30 }
     ];
     var MIN_GB = { "iPhone 17 Pro Max": 256 };
-    var CUOTAS_CANT = 12;              /* cantidad de cuotas fijas */
+    var CUOTAS_CANT = 12;              /* plan por defecto */
     var TC_USD = 1400;                 /* tipo de cambio referencial ARS/USD */
-    var ESTADO_MULT = { excelente: 1.15, bueno: 1, regular: 0.7 };
-    /* Valores estimados de canje en ARS para estado "bueno". */
+    var ESTADO_PEN_USD = { excelente: 0, bueno: -20, regular: -50 };
+    /* Tabla oficial de recargos (vigente 31/08/2026): total_add + posnet 4% en cascada, colchón ×1,02. */
+    var PLAN_RECARGO = { 1: 14.52, 2: 15.78, 3: 17.46, 6: 29.80, 9: 23.63, 12: 36.09 };
+    var POSNET = 4;
+    /* Valores de canje según lista oficial en USD (capacidad base, excelente estado). */
     var CANJE_VALORES = {
-      iphone: { label: "iPhone", modelos: [
-        { label: "iPhone 15 / 16", valor: 400000 },
-        { label: "iPhone 14", valor: 300000 },
-        { label: "iPhone 13", valor: 250000 },
-        { label: "iPhone 12 o anterior", valor: 150000 }
+      iphone: { label: "iPhone", android: false, modelos: [
+        { label: "iPhone 16 Pro Max", usd: 600 }, { label: "iPhone 16 Pro", usd: 540 },
+        { label: "iPhone 16 Plus", usd: 470 }, { label: "iPhone 16", usd: 440 },
+        { label: "iPhone 15 Pro Max", usd: 540 }, { label: "iPhone 15 Pro", usd: 500 },
+        { label: "iPhone 15 Plus", usd: 430 }, { label: "iPhone 15", usd: 400 },
+        { label: "iPhone 14 Pro Max", usd: 380 }, { label: "iPhone 14 Pro", usd: 350 },
+        { label: "iPhone 14 Plus", usd: 300 }, { label: "iPhone 14", usd: 280 },
+        { label: "iPhone 13 Pro Max", usd: 260 }, { label: "iPhone 13 Pro", usd: 240 },
+        { label: "iPhone 13", usd: 180 },
+        { label: "iPhone 12 Pro Max", usd: 210 }, { label: "iPhone 12 Pro", usd: 190 }, { label: "iPhone 12", usd: 130 },
+        { label: "iPhone 11 Pro Max", usd: 170 }, { label: "iPhone 11 Pro", usd: 150 }, { label: "iPhone 11", usd: 90 },
+        { label: "iPhone XR", usd: 30 }
       ] },
-      mac: { label: "Mac", modelos: [
-        { label: "MacBook M3 / M4", valor: 800000 },
-        { label: "MacBook M1 / M2", valor: 500000 }
+      samsung: { label: "Samsung", android: true, modelos: [
+        { label: "Galaxy S25 Ultra", usd: 720 }, { label: "Galaxy S25+", usd: 630 }, { label: "Galaxy S25", usd: 560 },
+        { label: "Galaxy S24 Ultra", usd: 600 }, { label: "Galaxy S24+", usd: 540 }, { label: "Galaxy S24", usd: 480 },
+        { label: "Galaxy S23 Ultra", usd: 520 }, { label: "Galaxy S23+", usd: 460 }, { label: "Galaxy S23", usd: 400 },
+        { label: "Galaxy S22 Ultra", usd: 420 }, { label: "Galaxy S22+", usd: 370 }, { label: "Galaxy S22", usd: 320 },
+        { label: "Galaxy S21 Ultra", usd: 340 }, { label: "Galaxy S21+", usd: 300 }, { label: "Galaxy S21", usd: 260 },
+        { label: "Galaxy S20 Ultra", usd: 250 }, { label: "Galaxy S20+", usd: 220 }, { label: "Galaxy S20", usd: 200 },
+        { label: "Galaxy A55", usd: 270 }, { label: "Galaxy A54", usd: 230 }, { label: "Galaxy A53", usd: 200 },
+        { label: "Galaxy A52", usd: 175 }, { label: "Galaxy A35", usd: 175 }, { label: "Galaxy A34", usd: 155 },
+        { label: "Galaxy A33", usd: 135 }, { label: "Galaxy A32", usd: 120 }, { label: "Galaxy A24", usd: 110 },
+        { label: "Galaxy A23", usd: 95 }, { label: "Galaxy A15", usd: 85 }, { label: "Galaxy A14", usd: 70 }
       ] },
-      ipad: { label: "iPad", modelos: [
-        { label: "iPad Pro / Air reciente", valor: 350000 },
-        { label: "iPad estándar / mini", valor: 200000 }
+      motorola: { label: "Motorola", android: true, modelos: [
+        { label: "Edge 50 Ultra", usd: 520 }, { label: "Edge 50 Pro", usd: 420 }, { label: "Edge 50", usd: 320 },
+        { label: "Edge 40 Pro", usd: 360 }, { label: "Edge 40", usd: 280 },
+        { label: "Edge 30 Pro", usd: 300 }, { label: "Edge 30", usd: 240 }, { label: "Edge 20", usd: 200 },
+        { label: "Moto G84", usd: 220 }, { label: "Moto G73", usd: 190 }, { label: "Moto G54", usd: 170 },
+        { label: "Moto G53", usd: 140 }, { label: "Moto G52", usd: 120 }, { label: "Moto G32", usd: 100 },
+        { label: "Moto G23", usd: 85 }, { label: "Moto G14", usd: 70 }
       ] },
-      watch: { label: "Apple Watch", modelos: [
-        { label: "Watch Ultra / Ultra 2", valor: 250000 },
-        { label: "Watch Series 9 / 10", valor: 150000 }
-      ] },
-      samsung: { label: "Samsung", modelos: [
-        { label: "Galaxy Z Fold / Flip reciente", valor: 400000 },
-        { label: "Galaxy S Ultra (S23 o posterior)", valor: 350000 }
+      xiaomi: { label: "Xiaomi", android: true, modelos: [
+        { label: "Xiaomi 14 Ultra", usd: 650 }, { label: "Xiaomi 14 Pro", usd: 560 }, { label: "Xiaomi 14", usd: 500 },
+        { label: "Xiaomi 13 Pro", usd: 480 }, { label: "Xiaomi 13", usd: 420 },
+        { label: "Mi 12 Pro", usd: 360 }, { label: "Mi 12", usd: 320 }, { label: "Mi 11", usd: 260 },
+        { label: "Redmi Note 13 Pro+", usd: 300 }, { label: "Redmi Note 13 Pro", usd: 260 },
+        { label: "Redmi Note 13", usd: 210 }, { label: "Redmi Note 12 Pro", usd: 230 },
+        { label: "Redmi Note 12", usd: 180 }, { label: "Redmi Note 11", usd: 150 }, { label: "Redmi Note 10", usd: 120 },
+        { label: "Redmi 12", usd: 80 }, { label: "Redmi 10", usd: 80 }
       ] }
     };
     /* =========================================================== */
@@ -1302,7 +1439,7 @@
     var fmtARS = new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS", maximumFractionDigits: 0 });
     var fmtUSD = new Intl.NumberFormat("es-AR", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 
-    var state = { modelo: "iPhone 17", gb: 128, trade: false, cat: "iphone", tradeIdx: 0, estado: "bueno" };
+    var state = { modelo: "iPhone 17", gb: 128, trade: false, cat: "iphone", tradeIdx: 0, estado: "bueno", plan: 12 };
 
     Object.keys(PRECIOS_BASE_ARS).forEach(function (m) {
       var o = document.createElement("option");
@@ -1347,7 +1484,7 @@
       catObj.modelos.forEach(function (m, i) {
         var o = document.createElement("option");
         o.value = String(i);
-        o.textContent = m.label + " (≈ " + fmtARS.format(m.valor) + " en buen estado)";
+        o.textContent = m.label + " (≈ " + fmtUSD.format(m.usd) + " base)";
         selTradeModel.appendChild(o);
       });
       if (state.tradeIdx >= catObj.modelos.length) state.tradeIdx = 0;
@@ -1374,19 +1511,26 @@
       var base = PRECIOS_BASE_ARS[state.modelo] || PRECIOS_BASE_ARS["iPhone 17"];
       var lista = Math.round(base * cap.mult / 1000) * 1000;
       var canje = 0;
+      var canjeUsd = 0;
       var canjeTxt = "Sin canje";
       if (state.trade) {
         var catObj = CANJE_VALORES[state.cat] || CANJE_VALORES.iphone;
         var m = catObj.modelos[state.tradeIdx] || catObj.modelos[0];
-        canje = Math.round(m.valor * (ESTADO_MULT[state.estado] || 1) / 1000) * 1000;
+        var pen = ESTADO_PEN_USD[state.estado] || 0;
+        canjeUsd = Math.max(0, m.usd + pen + (catObj.android ? -65 : 0));
+        canje = Math.round(canjeUsd * TC_USD / 1000) * 1000;
         canjeTxt = catObj.label + " " + m.label + " (" + state.estado + ")";
       }
       var finalP = Math.max(lista - canje, 0);
-      var cuota = Math.round(finalP / CUOTAS_CANT);
+      /* Fórmula oficial: total_a_cobrar = (precio_ars ÷ ((1 − recargo/100) × (1 − posnet/100))) × 1,02 */
+      var recargo = PLAN_RECARGO[state.plan] || PLAN_RECARGO[12];
+      var factorNeto = (1 - recargo / 100) * (1 - POSNET / 100);
+      var totalPlan = (finalP / factorNeto) * 1.02;
+      var cuota = Math.round(totalPlan / state.plan / 1000) * 1000;
       if (!isFinite(lista) || !isFinite(canje) || !isFinite(finalP) || !isFinite(cuota)) {
-        return { lista: base, canje: 0, canjeTxt: "Sin canje", finalP: base, cuota: Math.round(base / CUOTAS_CANT) };
+        return { lista: base, canje: 0, canjeTxt: "Sin canje", finalP: base, cuota: Math.round(base / CUOTAS_CANT), plan: 12 };
       }
-      return { lista: lista, canje: canje, canjeTxt: canjeTxt, finalP: finalP, cuota: cuota };
+      return { lista: lista, canje: canje, canjeTxt: canjeTxt, finalP: finalP, cuota: cuota, plan: state.plan, totalPlan: Math.round(totalPlan) };
     }
 
     function update() {
@@ -1394,14 +1538,16 @@
       outLista.textContent = fmtARS.format(r.lista);
       outCanje.textContent = r.canje ? "− " + fmtARS.format(r.canje) : "—";
       outFinal.textContent = fmtARS.format(r.finalP);
-      outCuota.textContent = fmtARS.format(r.cuota) + "/mes";
-      outAlt.textContent = "Efectivo / transferencia: " + fmtARS.format(r.finalP) +
+      var labelEl = document.getElementById("calcCuotaLabel");
+      if (labelEl) labelEl.textContent = r.plan === 1 ? "1 pago con tarjeta de" : r.plan + " cuotas fijas de";
+      outCuota.textContent = fmtARS.format(r.cuota) + (r.plan === 1 ? "" : "/mes");
+      outAlt.textContent = "Efectivo / transferencia (promo contado): " + fmtARS.format(r.finalP) +
         " · ≈ " + fmtUSD.format(r.finalP / TC_USD);
       var msg = "Hola iPhone Culture! Usé la calculadora de cuotas de la web y quiero este plan:\n" +
         "• Modelo: " + state.modelo + " " + state.gb + " GB\n" +
         "• Canje: " + r.canjeTxt + "\n" +
-        "• Precio final estimado: " + fmtARS.format(r.finalP) + "\n" +
-        "• Cuota estimada: " + CUOTAS_CANT + " cuotas fijas de " + fmtARS.format(r.cuota) + "\n" +
+        "• Precio final contado estimado: " + fmtARS.format(r.finalP) + "\n" +
+        "• Plan: " + (r.plan === 1 ? "1 pago" : r.plan + " cuotas fijas") + " de " + fmtARS.format(r.cuota) + "\n" +
         "¿Me confirman precio del día y disponibilidad?";
       waBtn.setAttribute("href", waLink(msg));
       lastMsg = msg;
@@ -1436,6 +1582,10 @@
       state.estado = btn.getAttribute("data-value") || "bueno";
       update();
     });
+    bindSingleRow(document.getElementById("calcPlanes"), function (btn) {
+      state.plan = parseInt(btn.getAttribute("data-plan"), 10) || 12;
+      update();
+    });
 
     waBtn.addEventListener("click", function () {
       var r = compute();
@@ -1443,7 +1593,7 @@
         modelo: state.modelo, capacidad_gb: state.gb,
         canje: state.trade ? r.canjeTxt : "no",
         precio_lista: r.lista, descuento_canje: r.canje,
-        precio_final: r.finalP, cuota: r.cuota, cuotas: CUOTAS_CANT
+        precio_final: r.finalP, cuota: r.cuota, cuotas: r.plan
       });
       icLead("calculadora", { message: lastMsg || "Consulta desde la calculadora de cuotas", model: state.modelo + " " + state.gb + " GB" });
     });
