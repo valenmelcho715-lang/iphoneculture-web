@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: iphoneculture
+    runtime: node
+    plan: free
+    buildCommand: ""
+    startCommand: node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: IC_ADMIN_TOKEN
+        generateValue: true
