@@ -22,6 +22,78 @@ const DATA_DIR = path.join(root, 'data');
 const EVENTS_FILE = path.join(DATA_DIR, 'events.jsonl');
 const LEADS_FILE = path.join(DATA_DIR, 'leads.jsonl');
 
+/* ---------- Storage: Supabase (persistente) con fallback JSONL local ---------- */
+const SUPA_URL = (process.env.SUPABASE_URL || '').replace(/\/+$/, '');
+const SUPA_KEY = process.env.SUPABASE_KEY || '';
+const USE_SUPA = /^https:\/\//.test(SUPA_URL) && SUPA_KEY.length >= 20;
+
+async function supaReq(method, table, qs, row) {
+  const ctrl = new AbortController();
+  const to = setTimeout(() => ctrl.abort(), 8000);
+  try {
+    const r = await fetch(`${SUPA_URL}/rest/v1/${table}${qs || ''}`, {
+      method,
+      headers: {
+        apikey: SUPA_KEY,
+        Authorization: 'Bearer ' + SUPA_KEY,
+        'Content-Type': 'application/json',
+        Prefer: 'return=minimal'
+      },
+      body: row ? JSON.stringify(row) : undefined,
+      signal: ctrl.signal
+    });
+    if (!r.ok) throw new Error('Supabase ' + r.status);
+    return method === 'GET' ? r.json() : null;
+  } finally { clearTimeout(to); }
+}
+
+async function storeEvent(obj) {
+  obj.ts = new Date().toISOString();
+  if (USE_SUPA) {
+    try {
+      await supaReq('POST', 'events', '', {
+        type: obj.type, page: obj.page || null,
+        referrer: obj.referrer || null, data: obj.data || null, ts: obj.ts
+      });
+      return;
+    } catch (e) { console.error('[ERROR] supa events:', e.message); /* cae a local */ }
+  }
+  await appendJsonl(EVENTS_FILE, obj);
+}
+
+async function storeLead(lead) {
+  lead.ts = new Date().toISOString();
+  if (USE_SUPA) {
+    try {
+      await supaReq('POST', 'leads', '', {
+        name: lead.name, phone: lead.phone || null, message: lead.message,
+        source: lead.source || null, model: lead.model || null,
+        ua: lead.ua || null, ts: lead.ts
+      });
+      return;
+    } catch (e) { console.error('[ERROR] supa leads:', e.message); }
+  }
+  await appendJsonl(LEADS_FILE, lead);
+}
+
+async function loadEvents() {
+  if (USE_SUPA) {
+    try {
+      return await supaReq('GET', 'events', '?select=type,page,referrer,data,ts&order=ts.desc&limit=5000');
+    } catch (e) { console.error('[ERROR] supa read events:', e.message); }
+  }
+  return readJsonl(EVENTS_FILE);
+}
+
+async function loadLeads() {
+  if (USE_SUPA) {
+    try {
+      return await supaReq('GET', 'leads', '?select=name,phone,message,source,model,ua,ts&order=ts.desc&limit=5000');
+    } catch (e) { console.error('[ERROR] supa read leads:', e.message); }
+  }
+  return readJsonl(LEADS_FILE);
+}
+
 /* Admin token: nunca un default estático. Si IC_ADMIN_TOKEN falta o es débil,
    se genera uno aleatorio por sesión y se loguea UNA vez. */
 let ADMIN_TOKEN = process.env.IC_ADMIN_TOKEN || '';
@@ -269,9 +341,9 @@ function checkAdmin(req) {
 }
 
 /* ---------- Stats ---------- */
-function buildStats() {
-  const events = readJsonl(EVENTS_FILE);
-  const leads = readJsonl(LEADS_FILE);
+async function buildStats() {
+  const events = await loadEvents();
+  const leads = await loadLeads();
   const visitas = events.filter(e => e.type === 'visita');
   const now = new Date();
   const dayKey = d => d.toISOString().slice(0, 10);
@@ -447,7 +519,7 @@ const server = http.createServer(async (req, res) => {
           }
         }
         const cleanData = sanitizeTrackData(body.type, body.data);
-        await appendJsonl(EVENTS_FILE, {
+        await storeEvent({
           type: body.type,
           page: typeof body.page === 'string' ? stripControl(body.page).slice(0, 200) : undefined,
           referrer: typeof body.referrer === 'string' ? stripControl(body.referrer).slice(0, 500) : undefined,
@@ -499,29 +571,29 @@ const server = http.createServer(async (req, res) => {
         const { lead, errors } = validateLead(body);
         if (errors) { sendJson(res, 400, { error: 'Validación falló', detalles: errors }); return; }
         lead.ua = String(req.headers['user-agent'] || '').slice(0, 200);
-        await appendJsonl(LEADS_FILE, lead);
+        await storeLead(lead);
         sendJson(res, 200, { ok: true });
         return;
       }
 
       if (urlPath === '/api/admin/stats' && req.method === 'GET') {
         if (!checkAdmin(req)) { logAdmin401(ip); sendJson(res, 401, { error: 'No autorizado' }); return; }
-        sendJson(res, 200, buildStats());
+        sendJson(res, 200, await buildStats());
         return;
       }
 
       if (urlPath === '/api/admin/leads' && req.method === 'GET') {
         if (!checkAdmin(req)) { logAdmin401(ip); sendJson(res, 401, { error: 'No autorizado' }); return; }
-        const leads = readJsonl(LEADS_FILE);
-        sendJson(res, 200, { total: leads.length, leads: leads.slice(-200).reverse() });
+        const leads = await loadLeads();
+        sendJson(res, 200, { total: leads.length, leads: leads.slice(0, 200) });
         return;
       }
 
       if (urlPath === '/api/admin/export' && req.method === 'GET') {
         if (!checkAdmin(req)) { logAdmin401(ip); sendJson(res, 401, { error: 'No autorizado' }); return; }
         const format = url.searchParams.get('format') || 'json';
-        const events = readJsonl(EVENTS_FILE);
-        const leads = readJsonl(LEADS_FILE);
+        const events = await loadEvents();
+        const leads = await loadLeads();
         if (format === 'csv') {
           const csv = '# events\n' + toCsv(events, ['type', 'ts', 'page', 'referrer', 'data']) +
             '\n# leads\n' + toCsv(leads, ['name', 'phone', 'message', 'source', 'model', 'ts']);
