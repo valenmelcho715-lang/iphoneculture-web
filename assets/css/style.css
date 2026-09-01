@@ -147,18 +147,28 @@ img, iframe { max-width: 100%; }
 .card p { font-size: 14.5px; color: var(--text-dim); }
 .card .btn { margin-top: 20px; }
 
-/* Product visuals: CSS gradients, no images */
+/* Product visuals */
 .phone-visual {
   height: 150px; border-radius: 14px; margin-bottom: 20px; position: relative; overflow: hidden;
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  background: linear-gradient(135deg, #1a1a1e, #2b2b30 160%);
 }
-.phone-visual::after {
-  content: ""; position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
-  width: 64px; height: 128px; border-radius: 18px;
-  background: rgba(10, 10, 10, 0.55); border: 1.5px solid rgba(255, 255, 255, 0.25);
+.catalogo-img {
+  max-height: 88%; max-width: 88%; object-fit: contain;
+  filter: drop-shadow(0 12px 22px rgba(0, 0, 0, 0.55));
+  transition: transform .3s ease;
 }
-.visual-pro  { background: linear-gradient(135deg, #2b2b30, #d4af6a 160%); }
-.visual-used { background: linear-gradient(135deg, #1c2333, #5a78ff 170%); }
-.visual-acc  { background: linear-gradient(135deg, #241d28, #b06ad4 170%); }
+.phone-visual:hover .catalogo-img { transform: scale(1.05); }
+.catalogo-duo .catalogo-img { max-width: 46%; }
+.catalogo-emoji { gap: 10px; flex-wrap: wrap; padding: 0 16px; }
+.catalogo-emoji span {
+  font-size: 34px; line-height: 1;
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.5));
+  transition: transform .25s ease;
+}
+.catalogo-emoji:hover span { transform: translateY(-4px); }
+.catalogo-emoji span:nth-child(2n) { transform: translateY(8px); }
+.catalogo-emoji:hover span:nth-child(2n) { transform: translateY(2px); }
 
 /* ---------- Configurator ---------- */
 .configurator {
