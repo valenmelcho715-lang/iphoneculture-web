@@ -1,0 +1,17 @@
+name: Keep-alive Render
+
+on:
+  schedule:
+    # Cada 10 minutos: evita que el servidor free de Render se duerma (duerme a los 15 min)
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping homepage
+        run: |
+          code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 50 https://iphoneculture-web.onrender.com/)
+          echo "HTTP $code"
+          test "$code" -ge 200 -a "$code" -lt 400
