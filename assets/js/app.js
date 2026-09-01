@@ -144,7 +144,7 @@
     });
   }
 
-  /* ---------- Scroll reveals (staggered) ---------- */
+  /* ---------- Scroll reveals (staggered, fail-safe) ---------- */
   var revealEls = document.querySelectorAll(".reveal");
   if ("IntersectionObserver" in window && !reducedMotion) {
     var io = new IntersectionObserver(
@@ -161,7 +161,19 @@
       },
       { threshold: 0.12 }
     );
-    revealEls.forEach(function (el) { io.observe(el); });
+    revealEls.forEach(function (el) {
+      var r = el.getBoundingClientRect();
+      if (r.top < window.innerHeight * 0.92) {
+        el.classList.add("visible");
+      } else {
+        el.classList.add("armed");
+        io.observe(el);
+      }
+    });
+    /* Fail-safe: si algo quedó oculto por cualquier motivo, mostrarlo a los 2,5 s */
+    setTimeout(function () {
+      revealEls.forEach(function (el) { el.classList.add("visible"); });
+    }, 2500);
   } else {
     revealEls.forEach(function (el) { el.classList.add("visible"); });
   }
@@ -1365,26 +1377,23 @@
     var waBtn = document.getElementById("calcWa");
 
     /* ==================== ACTUALIZAR PRECIOS ==================== */
-    /* Precios base referenciales en ARS (mercado argentino, ago-2026). */
-    var PRECIOS_BASE_ARS = {
-      "iPhone 13": 550000,
-      "iPhone 14": 650000,
-      "iPhone 15": 800000,
-      "iPhone 16": 1050000,
-      "iPhone 17": 1300000,
-      "iPhone 17 Air": 1500000,
-      "iPhone 17 Pro": 1700000,
-      "iPhone 17 Pro Max": 2000000
+    /* Tabla oficial de precios (vigente 31/08/2026). contado = Promo Contado (efectivo/transferencia, el más bajo). regular = Precio de lista. */
+    var CATALOGO = {
+      "iPhone 16": { 128: { contado: 1440000, regular: 1665000 } },
+      "iPhone 17": { 256: { contado: 1690000, regular: 1910000 } },
+      "iPhone 17 Air": { 256: { contado: 1758000, regular: 1977000 } },
+      "iPhone 17 Pro": {
+        256: { contado: 2052000, regular: 2265000 },
+        512: { contado: 2430000, regular: 2636000 }
+      },
+      "iPhone 17 Pro Max": {
+        256: { contado: 2224000, regular: 2434000 },
+        512: { contado: 2603000, regular: 2805000 },
+        1024: { contado: 2964000, regular: 3160000 },
+        2048: { contado: 3689000, regular: 3870000 }
+      }
     };
-    /* Capacidad: multiplicador sobre el precio base. 17 Pro Max parte de 256 GB. */
-    var CAPACIDADES = [
-      { gb: 128, mult: 1 },
-      { gb: 256, mult: 1.15 },
-      { gb: 512, mult: 1.30 }
-    ];
-    var MIN_GB = { "iPhone 17 Pro Max": 256 };
-    var CUOTAS_CANT = 12;              /* plan por defecto */
-    var TC_USD = 1400;                 /* tipo de cambio referencial ARS/USD */
+    var TC_USD = 1690;                 /* conversión interna USD→ARS para canjes (no se muestra) */
     var ESTADO_PEN_USD = { excelente: 0, bueno: -20, regular: -50 };
     /* Tabla oficial de recargos (vigente 31/08/2026): total_add + posnet 4% en cascada, colchón ×1,02. */
     var PLAN_RECARGO = { 1: 14.52, 2: 15.78, 3: 17.46, 6: 29.80, 9: 23.63, 12: 36.09 };
@@ -1439,12 +1448,16 @@
     var fmtARS = new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS", maximumFractionDigits: 0 });
     var fmtUSD = new Intl.NumberFormat("es-AR", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 
-    var state = { modelo: "iPhone 17", gb: 128, trade: false, cat: "iphone", tradeIdx: 0, estado: "bueno", plan: 12 };
+    var state = { modelo: "iPhone 17", gb: 256, trade: false, cat: "iphone", tradeIdx: 0, estado: "bueno", plan: 12 };
 
-    Object.keys(PRECIOS_BASE_ARS).forEach(function (m) {
+    function capLabel(gb) { return gb >= 1024 ? (gb / 1024) + " TB" : gb + " GB"; }
+
+    Object.keys(CATALOGO).forEach(function (m) {
       var o = document.createElement("option");
+      var skus = CATALOGO[m];
+      var minContado = Math.min.apply(null, Object.keys(skus).map(function (k) { return skus[k].contado; }));
       o.value = m;
-      o.textContent = m + " — desde " + fmtARS.format(PRECIOS_BASE_ARS[m]);
+      o.textContent = m + " — desde " + fmtARS.format(minContado);
       selModelo.appendChild(o);
     });
     selModelo.value = state.modelo;
@@ -1458,22 +1471,18 @@
 
     function renderCaps() {
       capsEl.innerHTML = "";
-      var minGb = MIN_GB[state.modelo] || 128;
-      var firstEnabled = null;
-      CAPACIDADES.forEach(function (c) {
-        if (c.gb < minGb) return;
+      var skus = CATALOGO[state.modelo] || CATALOGO["iPhone 17"];
+      var gbs = Object.keys(skus).map(Number);
+      if (gbs.indexOf(state.gb) === -1) state.gb = gbs[0];
+      gbs.forEach(function (gb) {
         var b = document.createElement("button");
         b.type = "button";
         b.className = "chip";
-        b.textContent = c.gb + " GB";
+        b.textContent = capLabel(gb);
         b.setAttribute("aria-pressed", "false");
-        b.setAttribute("data-gb", String(c.gb));
+        b.setAttribute("data-gb", String(gb));
         capsEl.appendChild(b);
-        if (!firstEnabled) firstEnabled = c.gb;
       });
-      if (state.gb < minGb || !capsEl.querySelector('[data-gb="' + state.gb + '"]')) {
-        state.gb = firstEnabled;
-      }
       var active = capsEl.querySelector('[data-gb="' + state.gb + '"]');
       if (active) { active.classList.add("active"); active.setAttribute("aria-pressed", "true"); }
     }
@@ -1507,9 +1516,10 @@
     }
 
     function compute() {
-      var cap = CAPACIDADES.filter(function (c) { return c.gb === state.gb; })[0] || CAPACIDADES[0];
-      var base = PRECIOS_BASE_ARS[state.modelo] || PRECIOS_BASE_ARS["iPhone 17"];
-      var lista = Math.round(base * cap.mult / 1000) * 1000;
+      var skus = CATALOGO[state.modelo] || CATALOGO["iPhone 17"];
+      var sku = skus[state.gb] || skus[Object.keys(skus)[0]];
+      var lista = sku.regular;
+      var contado = sku.contado;
       var canje = 0;
       var canjeUsd = 0;
       var canjeTxt = "Sin canje";
@@ -1521,14 +1531,14 @@
         canje = Math.round(canjeUsd * TC_USD / 1000) * 1000;
         canjeTxt = catObj.label + " " + m.label + " (" + state.estado + ")";
       }
-      var finalP = Math.max(lista - canje, 0);
+      var finalP = Math.max(contado - canje, 0);
       /* Fórmula oficial: total_a_cobrar = (precio_ars ÷ ((1 − recargo/100) × (1 − posnet/100))) × 1,02 */
       var recargo = PLAN_RECARGO[state.plan] || PLAN_RECARGO[12];
       var factorNeto = (1 - recargo / 100) * (1 - POSNET / 100);
       var totalPlan = (finalP / factorNeto) * 1.02;
       var cuota = Math.round(totalPlan / state.plan / 1000) * 1000;
       if (!isFinite(lista) || !isFinite(canje) || !isFinite(finalP) || !isFinite(cuota)) {
-        return { lista: base, canje: 0, canjeTxt: "Sin canje", finalP: base, cuota: Math.round(base / CUOTAS_CANT), plan: 12 };
+        return { lista: contado, canje: 0, canjeTxt: "Sin canje", finalP: contado, cuota: Math.round(contado / 12), plan: 12 };
       }
       return { lista: lista, canje: canje, canjeTxt: canjeTxt, finalP: finalP, cuota: cuota, plan: state.plan, totalPlan: Math.round(totalPlan) };
     }
@@ -1542,11 +1552,11 @@
       if (labelEl) labelEl.textContent = r.plan === 1 ? "1 pago con tarjeta de" : r.plan + " cuotas fijas de";
       outCuota.textContent = fmtARS.format(r.cuota) + (r.plan === 1 ? "" : "/mes");
       outAlt.textContent = "Efectivo / transferencia (promo contado): " + fmtARS.format(r.finalP) +
-        " · ≈ " + fmtUSD.format(r.finalP / TC_USD);
+        " · Precio de lista: " + fmtARS.format(r.lista);
       var msg = "Hola iPhone Culture! Usé la calculadora de cuotas de la web y quiero este plan:\n" +
-        "• Modelo: " + state.modelo + " " + state.gb + " GB\n" +
+        "• Modelo: " + state.modelo + " " + capLabel(state.gb) + "\n" +
         "• Canje: " + r.canjeTxt + "\n" +
-        "• Precio final contado estimado: " + fmtARS.format(r.finalP) + "\n" +
+        "• Precio promo contado estimado: " + fmtARS.format(r.finalP) + "\n" +
         "• Plan: " + (r.plan === 1 ? "1 pago" : r.plan + " cuotas fijas") + " de " + fmtARS.format(r.cuota) + "\n" +
         "¿Me confirman precio del día y disponibilidad?";
       waBtn.setAttribute("href", waLink(msg));

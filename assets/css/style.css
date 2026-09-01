@@ -302,8 +302,9 @@ textarea.input { resize: vertical; min-height: 80px; }
 }
 
 /* ---------- Reveal animations ---------- */
-.js .reveal { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s ease; }
-.js .reveal.visible { opacity: 1; transform: translateY(0); }
+.js .reveal { opacity: 1; transform: none; }
+.js .reveal.armed { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s ease; }
+.js .reveal.armed.visible { opacity: 1; transform: translateY(0); }
 .no-js .reveal { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1; transform: none; transition: none; }
