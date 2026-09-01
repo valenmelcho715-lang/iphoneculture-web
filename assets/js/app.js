@@ -1059,29 +1059,20 @@
     if (!grid) return;
 
     var MODELS = [
-      { name: "iPhone 13", year: 2021, chip: "A15 Bionic", screen: "6.1″ Super Retina", cam: "Dual 12 MP", batt: "Hasta 19 h de video", conn: "Lightning", grad: "linear-gradient(160deg,#2e3b52,#101623 70%)", notch: true, cams: 2, tags: ["economica"] },
-      { name: "iPhone 14", year: 2022, chip: "A15 Bionic", screen: "6.1″ Super Retina", cam: "Dual 12 MP (Photonic Engine)", batt: "Hasta 20 h de video", conn: "Lightning", grad: "linear-gradient(160deg,#3a4a6b,#141c2e 70%)", notch: true, cams: 2, tags: ["economica"] },
-      { name: "iPhone 15", year: 2023, chip: "A16 Bionic", screen: "6.1″ · Dynamic Island", cam: "48 MP + ultra gran angular", batt: "Hasta 20 h de video", conn: "USB-C", grad: "linear-gradient(160deg,#4d6a8a,#1a2438 70%)", notch: false, cams: 2, tags: ["economica"] },
-      { name: "iPhone 16", year: 2024, chip: "A18", screen: "6.1″ Super Retina", cam: "48 MP · Camera Control", batt: "Hasta 22 h de video", conn: "USB-C", grad: "linear-gradient(160deg,#3f7d6b,#12241f 70%)", notch: false, cams: 2, tags: [] },
-      { name: "iPhone 17", year: 2025, chip: "A19", screen: "6.3″ ProMotion 120 Hz", cam: "48 MP Fusion + UGA", batt: "Hasta 30 h de video", conn: "USB-C", grad: "linear-gradient(160deg,#8a7ad4,#241c3d 70%)", notch: false, cams: 2, tags: ["ultima"] },
-      { name: "iPhone 17 Air", year: 2025, chip: "A19 Pro", screen: "6.5″ ProMotion · 5.6 mm ultrafino", cam: "48 MP Fusion", batt: "Hasta 27 h de video", conn: "USB-C · solo eSIM", grad: "linear-gradient(160deg,#c8ccd4,#3a3f4a 70%)", notch: false, cams: 1, tags: ["ultima"] },
-      { name: "iPhone 17 Pro", year: 2025, chip: "A19 Pro", screen: "6.3″ ProMotion 120 Hz", cam: "Triple 48 MP + teleobjetivo", batt: "Hasta 33 h de video", conn: "USB-C", grad: "linear-gradient(160deg,#c47e3d,#3d2312 70%)", notch: false, cams: 3, tags: ["ultima", "pro"] },
-      { name: "iPhone 17 Pro Max", year: 2025, chip: "A19 Pro", screen: "6.9″ ProMotion 120 Hz", cam: "Triple 48 MP + teleobjetivo", batt: "Hasta 39 h · la mejor batería", conn: "USB-C", grad: "linear-gradient(160deg,#d4af6a,#3a2c14 70%)", notch: false, cams: 3, tags: ["ultima", "pro"] }
+      { name: "iPhone 13", year: 2021, chip: "A15 Bionic", screen: "6.1″ Super Retina", cam: "Dual 12 MP", batt: "Hasta 19 h de video", conn: "Lightning", img: "assets/img/iphone13.webp", tags: ["economica"] },
+      { name: "iPhone 14", year: 2022, chip: "A15 Bionic", screen: "6.1″ Super Retina", cam: "Dual 12 MP (Photonic Engine)", batt: "Hasta 20 h de video", conn: "Lightning", img: "assets/img/iphone14.webp", tags: ["economica"] },
+      { name: "iPhone 15", year: 2023, chip: "A16 Bionic", screen: "6.1″ · Dynamic Island", cam: "48 MP + ultra gran angular", batt: "Hasta 20 h de video", conn: "USB-C", img: "assets/img/iphone15.gif", tags: ["economica"] },
+      { name: "iPhone 16", year: 2024, chip: "A18", screen: "6.1″ Super Retina", cam: "48 MP · Camera Control", batt: "Hasta 22 h de video", conn: "USB-C", img: "assets/img/iphone16.webp", tags: [] },
+      { name: "iPhone 17", year: 2025, chip: "A19", screen: "6.3″ ProMotion 120 Hz", cam: "48 MP Fusion + UGA", batt: "Hasta 30 h de video", conn: "USB-C", img: "assets/img/iphone17.png", tags: ["ultima"] },
+      { name: "iPhone 17 Air", year: 2025, chip: "A19 Pro", screen: "6.5″ ProMotion · 5.6 mm ultrafino", cam: "48 MP Fusion", batt: "Hasta 27 h de video", conn: "USB-C · solo eSIM", img: "assets/img/iphone17air.jpg", tags: ["ultima"] },
+      { name: "iPhone 17 Pro", year: 2025, chip: "A19 Pro", screen: "6.3″ ProMotion 120 Hz", cam: "Triple 48 MP + teleobjetivo", batt: "Hasta 33 h de video", conn: "USB-C", img: "assets/img/iphone17pro.png", tags: ["ultima", "pro"] },
+      { name: "iPhone 17 Pro Max", year: 2025, chip: "A19 Pro", screen: "6.9″ ProMotion 120 Hz", cam: "Triple 48 MP + teleobjetivo", batt: "Hasta 39 h · la mejor batería", conn: "USB-C", img: "assets/img/iphone17pro.png", tags: ["ultima", "pro"] }
     ];
-
-    function camHtml(cams) {
-      if (cams === 1) return "";
-      return '<div class="prod-cam' + (cams === 3 ? " cam-triple" : "") + '" aria-hidden="true"></div>';
-    }
 
     function cardHtml(m) {
       return '<article class="prod-card" data-tags="' + m.tags.join(" ") + '">' +
         '<div class="prod-mock">' +
-          '<div class="prod-phone" style="background:' + m.grad + '">' +
-            (m.notch ? '<div class="prod-notch" aria-hidden="true"></div>' : '<div class="prod-island" aria-hidden="true"></div>') +
-            camHtml(m.cams) +
-            '<span class="prod-badge">' + m.name.replace("iPhone ", "") + "</span>" +
-          "</div>" +
+          '<img class="prod-img" src="' + m.img + '" alt="' + m.name + '" loading="lazy">' +
         "</div>" +
         "<h3>" + m.name + '</h3><p class="prod-year">' + m.year + " · " + m.chip + "</p>" +
         '<ul class="prod-specs">' +
@@ -1147,17 +1138,17 @@
     if (!widget || !body || !resultEl) return;
 
     /* Gradientes reutilizados del catálogo de productos (mockups CSS) */
-    var QUIZ_GRADS = {
-      "iPhone 13": "linear-gradient(160deg,#2e3b52,#101623 70%)",
-      "iPhone 14": "linear-gradient(160deg,#3a4a6b,#141c2e 70%)",
-      "iPhone 15": "linear-gradient(160deg,#4d6a8a,#1a2438 70%)",
-      "iPhone 16": "linear-gradient(160deg,#3f7d6b,#12241f 70%)",
-      "iPhone 17": "linear-gradient(160deg,#8a7ad4,#241c3d 70%)",
-      "iPhone 17 Air": "linear-gradient(160deg,#c8ccd4,#3a3f4a 70%)",
-      "iPhone 17 Pro": "linear-gradient(160deg,#c47e3d,#3d2312 70%)",
-      "iPhone 17 Pro Max": "linear-gradient(160deg,#d4af6a,#3a2c14 70%)"
+    var QUIZ_IMGS = {
+      "iPhone 13": "assets/img/iphone13.webp",
+      "iPhone 14": "assets/img/iphone14.webp",
+      "iPhone 15": "assets/img/iphone15.gif",
+      "iPhone 16": "assets/img/iphone16.webp",
+      "iPhone 17": "assets/img/iphone17.png",
+      "iPhone 17 Air": "assets/img/iphone17air.jpg",
+      "iPhone 17 Pro": "assets/img/iphone17pro.png",
+      "iPhone 17 Pro Max": "assets/img/iphone17pro.png"
     };
-    var QUIZ_MODELS = Object.keys(QUIZ_GRADS);
+    var QUIZ_MODELS = Object.keys(QUIZ_IMGS);
     /* Índices en el comparador (SPECS): 0=17PM, 1=17Pro, 2=17Air, 3=17, 4=16, 5=15, 6=14, 7=13 */
     var CMP_INDEX = { "iPhone 17 Pro Max": 0, "iPhone 17 Pro": 1, "iPhone 17 Air": 2, "iPhone 17": 3, "iPhone 16": 4, "iPhone 15": 5, "iPhone 14": 6, "iPhone 13": 7 };
 
@@ -1292,9 +1283,7 @@
     }
 
     function mockHtml(name) {
-      return '<div class="prod-mock"><div class="prod-phone" style="background:' + QUIZ_GRADS[name] + '">' +
-        '<div class="prod-island" aria-hidden="true"></div>' +
-        '<span class="prod-badge">' + name.replace("iPhone ", "") + "</span></div></div>";
+      return '<div class="prod-mock"><img class="prod-img" src="' + QUIZ_IMGS[name] + '" alt="' + name + '" loading="lazy"></div>';
     }
 
     function renderResult() {

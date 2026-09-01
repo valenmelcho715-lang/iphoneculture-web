@@ -539,51 +539,16 @@ textarea.input { resize: vertical; min-height: 80px; }
   display: flex; align-items: center; justify-content: center;
   perspective: 600px;
 }
-.prod-phone {
-  position: relative; width: 88px; height: 180px; border-radius: 24px;
-  border: 2px solid rgba(255, 255, 255, 0.28);
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55), inset 0 0 0 2px rgba(0, 0, 0, 0.35);
-  overflow: hidden; transition: transform .3s ease;
+.prod-img {
+  max-height: 100%; max-width: 100%; object-fit: contain;
+  filter: drop-shadow(0 18px 30px rgba(0, 0, 0, 0.55));
+  transition: transform .35s ease;
 }
-.prod-phone::before { /* pantalla interior */
-  content: ""; position: absolute; inset: 5px; border-radius: 20px;
-  background: linear-gradient(160deg, rgba(255,255,255,0.10), rgba(0,0,0,0.35) 55%);
-}
-.prod-phone::after { /* brillo animado */
-  content: ""; position: absolute; top: -60%; left: -80%; width: 60%; height: 220%;
-  background: linear-gradient(105deg, transparent, rgba(255, 255, 255, 0.22), transparent);
-  transform: rotate(8deg); animation: prodShine 4.5s ease-in-out infinite;
-}
+.prod-mock:hover .prod-img { transform: scale(1.06) rotate(-1.5deg); }
 @keyframes prodShine {
   0%, 55% { left: -80%; }
   85%, 100% { left: 160%; }
 }
-.prod-notch, .prod-island {
-  position: absolute; top: 11px; left: 50%; transform: translateX(-50%);
-  background: #050505; z-index: 2;
-}
-.prod-notch { width: 46px; height: 13px; border-radius: 0 0 10px 10px; }
-.prod-island { width: 34px; height: 9px; border-radius: 999px; }
-.prod-cam {
-  position: absolute; top: 12px; left: 10px; z-index: 2;
-  width: 34px; height: 34px; border-radius: 11px;
-  background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.18);
-}
-.prod-cam::before, .prod-cam::after {
-  content: ""; position: absolute; width: 10px; height: 10px; border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #3a3f4a, #0c0d10 70%);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-}
-.prod-cam::before { top: 4px; left: 4px; }
-.prod-cam::after { bottom: 4px; right: 4px; }
-.prod-cam.cam-triple { height: 46px; }
-.prod-cam.cam-triple::before { box-shadow: 0 14px 0 0 #14161a; }
-.prod-badge {
-  position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
-  font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.75); z-index: 2; white-space: nowrap;
-}
-.prod-mock:hover .prod-phone { transform: rotateY(-10deg) rotateX(4deg); }
 
 .prod-card h3 { font-size: 18px; font-weight: 800; letter-spacing: -0.3px; margin-bottom: 4px; }
 .prod-year { font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 14px; }
@@ -604,11 +569,9 @@ textarea.input { resize: vertical; min-height: 80px; }
 @media (max-width: 640px) {
   .prod-grid { grid-template-columns: 1fr; }
   .prod-mock { height: 170px; }
-  .prod-phone { width: 80px; height: 162px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .prod-phone::after { animation: none; }
-  .prod-mock:hover .prod-phone { transform: none; }
+  .prod-mock:hover .prod-img { transform: none; }
 }
 
 /* ---------- Nav compact (muchos links) ---------- */
