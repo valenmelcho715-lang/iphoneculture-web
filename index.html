@@ -83,6 +83,7 @@
   <div class="nav-inner">
     <a href="#top" class="nav-logo">iPhone<span>Culture</span></a>
     <div class="nav-links" id="navLinks">
+      <a href="#appleweek" class="nav-aw">🍎 Apple Week</a>
       <a href="#ventajas">Ventajas</a>
       <a href="#catalogo">Catálogo</a>
       <a href="#productos">Productos</a>
@@ -110,6 +111,30 @@
 </nav>
 
 <main id="contenido">
+
+<!-- ===== APPLE WEEK (evento 7-12 sept) ===== -->
+<section class="aw-banner" id="appleweek" aria-label="Apple Week: semana de beneficios">
+  <div class="container aw-inner">
+    <div class="aw-copy">
+      <p class="aw-tag">🍎 APPLE WEEK · 7 al 12 de septiembre</p>
+      <h2 class="aw-title">Hasta <span>60% OFF</span> + plan canje + 12 cuotas fijas</h2>
+      <p class="aw-sub">Solo 6 días para renovar tu iPhone con beneficios increíbles. Stock limitado.</p>
+      <div class="aw-count" id="awCount" role="timer" aria-live="polite">
+        <div><b id="awD">--</b><i>días</i></div>
+        <div><b id="awH">--</b><i>hs</i></div>
+        <div><b id="awM">--</b><i>min</i></div>
+        <div><b id="awS">--</b><i>seg</i></div>
+      </div>
+      <a class="btn btn-wa btn-lg aw-cta" href="https://wa.me/542994652611?text=Hola%20iPhone%20Culture%2C%20quiero%20aprovechar%20el%20Apple%20Week%20(del%207%20al%2012%2F9)." target="_blank" rel="noopener">Quiero mi beneficio del Apple Week</a>
+    </div>
+    <div class="aw-carousel" id="awCarousel">
+      <img src="assets/img/appleweek1.jpg" alt="Flyer Apple Week: se viene, solo 6 días" class="aw-slide active">
+      <img src="assets/img/appleweek2.jpg" alt="Flyer Apple Week: descuentos de hasta 60% off" class="aw-slide">
+      <img src="assets/img/appleweek3.jpg" alt="Flyer Apple Week: qué es Apple Week" class="aw-slide">
+      <div class="aw-dots" id="awDots"></div>
+    </div>
+  </div>
+</section>
 
 <!-- ===== HERO ===== -->
 <header class="hero" id="top">
@@ -852,6 +877,21 @@
   <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.6 0-3.1-.4-4.4-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.6-6.1c-.3-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.3-.6.8-.8 1-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4 0-.5.1-.7l.4-.5c.1-.2.1-.3 0-.5-.1-.1-.6-1.4-.8-1.9-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.1 0 1.2.9 2.4 1 2.6.1.2 1.8 2.7 4.3 3.8 1.6.7 2.2.7 3 .6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2 0-.1-.2-.2-.5-.3Z"/></svg>
 </a>
 
+<!-- ===== MODAL APPLE WEEK ===== -->
+<div class="aw-modal" id="awModal" role="dialog" aria-modal="true" aria-label="Apple Week, del 7 al 12 de septiembre" hidden>
+  <div class="aw-modal-box">
+    <button class="aw-close" id="awClose" aria-label="Cerrar">✕</button>
+    <div class="aw-carousel aw-carousel-modal" id="awModalCarousel">
+      <img src="assets/img/appleweek1.jpg" alt="Flyer Apple Week: se viene, solo 6 días" class="aw-slide active">
+      <img src="assets/img/appleweek2.jpg" alt="Flyer Apple Week: descuentos de hasta 60% off" class="aw-slide">
+      <img src="assets/img/appleweek3.jpg" alt="Flyer Apple Week: qué es Apple Week" class="aw-slide">
+    </div>
+    <p class="aw-modal-title">🍎 APPLE WEEK · 7 al 12 de septiembre</p>
+    <a class="btn btn-wa btn-lg" href="https://wa.me/542994652611?text=Hola%20iPhone%20Culture%2C%20quiero%20aprovechar%20el%20Apple%20Week%20(del%207%20al%2012%2F9)." target="_blank" rel="noopener">Quiero mi beneficio</a>
+  </div>
+</div>
+
+<script src="assets/js/appleweek.js" defer></script>
 <script src="assets/js/app.js" defer></script>
 </body>
 </html>
