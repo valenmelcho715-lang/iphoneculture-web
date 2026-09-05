@@ -792,3 +792,41 @@ textarea.input { resize: vertical; min-height: 80px; }
   .aw-count { justify-content: center; }
   .aw-carousel { max-width: 280px; }
 }
+
+/* ===== TEMA APPLE WEEK GLOBAL (body.aw-theme, auto hasta 15/9) ===== */
+body.aw-theme {
+  --accent: #FFD100;                    /* amarillo Apple Week */
+  --accent-soft: rgba(255, 209, 0, 0.14);
+}
+body.aw-theme .hero-bg {
+  background:
+    radial-gradient(ellipse 60% 45% at 20% 15%, rgba(255, 209, 0, 0.20), transparent 60%),
+    radial-gradient(ellipse 50% 40% at 85% 75%, rgba(27, 79, 216, 0.22), transparent 60%),
+    radial-gradient(ellipse 40% 35% at 60% 20%, rgba(232, 48, 42, 0.12), transparent 60%);
+}
+body.aw-theme .badge-ig { border-color: rgba(255, 209, 0, 0.4); }
+body.aw-theme .badge-ig:hover { background: rgba(255, 209, 0, 0.22); }
+body.aw-theme .card:hover,
+body.aw-theme .prod-card:hover { border-color: rgba(255, 209, 0, 0.45); }
+body.aw-theme .chip:hover,
+body.aw-theme .turno-day:hover,
+body.aw-theme .quiz-opt:hover { border-color: rgba(255, 209, 0, 0.5); }
+body.aw-theme .faq-item[open] { border-color: rgba(255, 209, 0, 0.4); }
+body.aw-theme .cmp-card.winner {
+  border-color: rgba(255, 209, 0, 0.55);
+  box-shadow: 0 0 0 1px rgba(255, 209, 0, 0.3), 0 18px 44px rgba(0,0,0,0.45);
+}
+body.aw-theme .ti-step-dot.done { border-color: rgba(255, 209, 0, 0.5); }
+body.aw-theme .btn-outline { color: #FFD100; border-color: #FFD100; }
+body.aw-theme .btn-outline:hover { background: rgba(255, 209, 0, 0.14); }
+/* Nav: línea tricolor Apple Week */
+body.aw-theme .nav.scrolled { border-bottom: 2px solid #FFD100; }
+body.aw-theme .nav-logo span { color: #FFD100; }
+/* Footer y detalles */
+body.aw-theme a:hover { color: #FFD100; }
+body.aw-theme ::selection { background: #FFD100; color: #111; }
+/* Cinta tricolor bajo el banner del héroe */
+body.aw-theme .hero::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 4px;
+  background: linear-gradient(90deg, #FFD100 0 33%, #E8302A 33% 66%, #1B4FD8 66% 100%);
+}

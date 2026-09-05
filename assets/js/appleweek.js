@@ -3,6 +3,12 @@
   "use strict";
 
   var AW_END = new Date("2026-09-12T23:59:59-03:00").getTime();
+  var AW_THEME_END = new Date("2026-09-15T23:59:59-03:00").getTime();
+
+  /* ---------- Tema Apple Week en TODA la web (hasta 15/9 inclusive) ---------- */
+  if (Date.now() <= AW_THEME_END) {
+    document.body.classList.add("aw-theme");
+  }
 
   /* ---------- Countdown ---------- */
   var d = document.getElementById("awD"),
