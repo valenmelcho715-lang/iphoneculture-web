@@ -763,8 +763,10 @@ textarea.input { resize: vertical; min-height: 80px; }
   display: flex; align-items: center; justify-content: center;
   padding: 20px;
   opacity: 0; transition: opacity 0.25s ease;
+  pointer-events: none;
 }
-.aw-modal.open { opacity: 1; }
+.aw-modal[hidden] { display: none; }
+.aw-modal.open { opacity: 1; pointer-events: auto; }
 .aw-modal-box {
   position: relative;
   background: var(--surface);
