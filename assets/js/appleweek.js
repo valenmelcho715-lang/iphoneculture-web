@@ -3,7 +3,14 @@
   "use strict";
 
   var AW_END = new Date("2026-09-12T23:59:59-03:00").getTime();
+  var AW_OFERTAS_START = new Date("2026-09-07T11:00:00-03:00").getTime();
   var AW_THEME_END = new Date("2026-09-15T23:59:59-03:00").getTime();
+
+  /* ---------- Galería de ofertas: visible 7/9 11:00 → 12/9 23:59 ---------- */
+  var ofertas = document.getElementById("ofertas-aw");
+  if (ofertas && Date.now() >= AW_OFERTAS_START && Date.now() <= AW_END) {
+    ofertas.hidden = false;
+  }
 
   /* ---------- Tema Apple Week en TODA la web (hasta 15/9 inclusive) ---------- */
   if (Date.now() <= AW_THEME_END) {

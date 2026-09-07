@@ -830,3 +830,29 @@ body.aw-theme .hero::after {
   content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 4px;
   background: linear-gradient(90deg, #FFD100 0 33%, #E8302A 33% 66%, #1B4FD8 66% 100%);
 }
+
+/* ===== GALERÍA OFERTAS APPLE WEEK ===== */
+.ofertas-aw { background: linear-gradient(135deg, #FFD100 0%, #ffb400 60%, #ffe066 100%); }
+.ofertas-aw .section-head h2, .ofertas-aw .section-sub { color: #111; }
+.ofertas-aw .eyebrow { color: #E8302A; }
+.ofertas-aw .accent { color: #1B4FD8; }
+.ofertas-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 18px; margin-top: 34px;
+}
+.oferta-card {
+  position: relative; display: block; border-radius: 14px; overflow: hidden;
+  border: 3px solid #111; background: #111;
+  transition: transform .2s ease, box-shadow .2s ease;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+}
+.oferta-card:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 16px 36px rgba(0,0,0,0.4); }
+.oferta-card img { display: block; width: 100%; height: auto; }
+.oferta-cta {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(135deg, #128c4b, #0b6e3c); color: #fff;
+  font-weight: 700; font-size: 13px; text-align: center; padding: 9px 6px;
+}
+@media (max-width: 560px) {
+  .ofertas-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+}
