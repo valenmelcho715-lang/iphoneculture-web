@@ -1066,7 +1066,10 @@
       { name: "iPhone 17", year: 2025, chip: "A19", screen: "6.3″ ProMotion 120 Hz", cam: "48 MP Fusion + UGA", batt: "Hasta 30 h de video", conn: "USB-C", img: "assets/img/iphone17.png", tags: ["ultima"] },
       { name: "iPhone 17 Air", year: 2025, chip: "A19 Pro", screen: "6.5″ ProMotion · 5.6 mm ultrafino", cam: "48 MP Fusion", batt: "Hasta 27 h de video", conn: "USB-C · solo eSIM", img: "assets/img/iphone17air.jpg", tags: ["ultima"] },
       { name: "iPhone 17 Pro", year: 2025, chip: "A19 Pro", screen: "6.3″ ProMotion 120 Hz", cam: "Triple 48 MP + teleobjetivo", batt: "Hasta 33 h de video", conn: "USB-C", img: "assets/img/iphone17pro.png", tags: ["ultima", "pro"] },
-      { name: "iPhone 17 Pro Max", year: 2025, chip: "A19 Pro", screen: "6.9″ ProMotion 120 Hz", cam: "Triple 48 MP + teleobjetivo", batt: "Hasta 39 h · la mejor batería", conn: "USB-C", img: "assets/img/iphone17pro.png", tags: ["ultima", "pro"] }
+      { name: "iPhone 17 Pro Max", year: 2025, chip: "A19 Pro", screen: "6.9″ ProMotion 120 Hz", cam: "Triple 48 MP + teleobjetivo", batt: "Hasta 39 h · la mejor batería", conn: "USB-C", img: "assets/img/iphone17pro.png", tags: ["ultima", "pro"] },
+      { name: "iPhone 18 Pro", year: 2026, chip: "A20 Pro 2nm", screen: "6.3″ ProMotion 120 Hz · 3000 nits", cam: "48 MP Fusion · apertura variable ƒ/1.48–ƒ/4.0", batt: "Hasta 36 h de video", conn: "USB-C 10 Gb/s", img: "assets/img/iphone18/iphone-18-pro-y-pro-max-frontal.jpg", tags: ["proximo", "pro"] },
+      { name: "iPhone 18 Pro Max", year: 2026, chip: "A20 Pro 2nm", screen: "6.9″ ProMotion 120 Hz · 3000 nits", cam: "48 MP Fusion · apertura variable ƒ/1.48–ƒ/4.0", batt: "Hasta 45 h · récord histórico", conn: "USB-C 10 Gb/s", img: "assets/img/iphone18/iphone-18-pro-y-pro-max-frontal.jpg", tags: ["proximo", "pro"] },
+      { name: "iPhone Duo", year: 2026, chip: "A20 Pro", screen: "7.6″ plegable + 5.4″ externa", cam: "48 MP Fusion + UGA", batt: "Hasta 44 h (pantalla externa)", conn: "USB-C · solo eSIM", img: "assets/img/iphone18/iphone-duo-diseno.jpg", tags: ["proximo"] }
     ];
 
     function cardHtml(m) {
@@ -1146,7 +1149,10 @@
       "iPhone 17": "assets/img/iphone17.png",
       "iPhone 17 Air": "assets/img/iphone17air.jpg",
       "iPhone 17 Pro": "assets/img/iphone17pro.png",
-      "iPhone 17 Pro Max": "assets/img/iphone17pro.png"
+      "iPhone 17 Pro Max": "assets/img/iphone17pro.png",
+      "iPhone 18 Pro": "assets/img/iphone18/iphone-18-pro-y-pro-max-frontal.jpg",
+      "iPhone 18 Pro Max": "assets/img/iphone18/iphone-18-pro-y-pro-max-frontal.jpg",
+      "iPhone Duo": "assets/img/iphone18/iphone-duo-diseno.jpg"
     };
     var QUIZ_MODELS = Object.keys(QUIZ_IMGS);
     /* Índices en el comparador (SPECS): 0=17PM, 1=17Pro, 2=17Air, 3=17, 4=16, 5=15, 6=14, 7=13 */
@@ -1156,9 +1162,9 @@
       {
         key: "uso", q: "¿Para qué lo vas a usar principalmente?",
         opts: [
-          { label: "Fotos y video", sub: "Redes, contenido, recuerdos en serio", w: { "iPhone 17 Pro Max": 3, "iPhone 17 Pro": 3, "iPhone 17": 1, "iPhone 16": 1 } },
-          { label: "Trabajo y estudio", sub: "Mail, documentos, videollamadas", w: { "iPhone 17": 2, "iPhone 16": 2, "iPhone 15": 2, "iPhone 17 Air": 1 } },
-          { label: "Gaming y redes", sub: "Juegos pesados y mucha pantalla", w: { "iPhone 17 Pro": 2, "iPhone 17 Pro Max": 2, "iPhone 17": 2, "iPhone 16": 1 } },
+          { label: "Fotos y video", sub: "Redes, contenido, recuerdos en serio", w: { "iPhone 18 Pro Max": 3, "iPhone 18 Pro": 3, "iPhone 17 Pro Max": 3, "iPhone 17 Pro": 3, "iPhone 17": 1, "iPhone 16": 1, "iPhone Duo": -1 } },
+          { label: "Trabajo y estudio", sub: "Mail, documentos, videollamadas", w: { "iPhone 17": 2, "iPhone 16": 2, "iPhone 15": 2, "iPhone 17 Air": 1, "iPhone Duo": 2, "iPhone 18 Pro": 1 } },
+          { label: "Gaming y redes", sub: "Juegos pesados y mucha pantalla", w: { "iPhone 18 Pro": 2, "iPhone 18 Pro Max": 2, "iPhone 17 Pro": 2, "iPhone 17 Pro Max": 2, "iPhone 17": 2, "iPhone 16": 1, "iPhone Duo": 1 } },
           { label: "Uso básico", sub: "WhatsApp, llamadas, redes ligeras", w: { "iPhone 13": 3, "iPhone 14": 3, "iPhone 15": 1 } }
         ]
       },
@@ -1167,15 +1173,15 @@
         opts: [
           { label: "Económico", sub: "El mejor iPhone al menor precio", w: { "iPhone 13": 3, "iPhone 14": 2, "iPhone 15": 1 } },
           { label: "Medio", sub: "Equilibrio entre precio y prestaciones", w: { "iPhone 15": 2, "iPhone 16": 2, "iPhone 14": 1 } },
-          { label: "Alto", sub: "Última generación sin ir al tope", w: { "iPhone 17": 2, "iPhone 17 Air": 2, "iPhone 16": 1 } },
-          { label: "Sin techo", sub: "Quiero lo mejor que exista", w: { "iPhone 17 Pro Max": 3, "iPhone 17 Pro": 3, "iPhone 17 Air": 1 } }
+          { label: "Alto", sub: "Última generación sin ir al tope", w: { "iPhone 17": 2, "iPhone 17 Air": 2, "iPhone 16": 1, "iPhone 18 Pro": 1 } },
+          { label: "Sin techo", sub: "Quiero lo mejor que exista", w: { "iPhone 18 Pro Max": 3, "iPhone 18 Pro": 3, "iPhone Duo": 3, "iPhone 17 Pro Max": 2, "iPhone 17 Pro": 2, "iPhone 17 Air": 1 } }
         ]
       },
       {
         key: "tamano", q: "¿Qué tamaño de pantalla preferís?",
         opts: [
-          { label: "Compacto", sub: "Cómodo con una mano", w: { "iPhone 13": 1, "iPhone 14": 1, "iPhone 15": 1, "iPhone 16": 1, "iPhone 17": 1, "iPhone 17 Pro": 1, "iPhone 17 Air": -1, "iPhone 17 Pro Max": -2 } },
-          { label: "Grande", sub: "Cuanta más pantalla, mejor", w: { "iPhone 17 Pro Max": 3, "iPhone 17 Air": 2 } },
+          { label: "Compacto", sub: "Cómodo con una mano", w: { "iPhone 13": 1, "iPhone 14": 1, "iPhone 15": 1, "iPhone 16": 1, "iPhone 17": 1, "iPhone 17 Pro": 1, "iPhone 18 Pro": 1, "iPhone 17 Air": -1, "iPhone 17 Pro Max": -2, "iPhone 18 Pro Max": -2, "iPhone Duo": -2 } },
+          { label: "Grande", sub: "Cuanta más pantalla, mejor", w: { "iPhone Duo": 3, "iPhone 18 Pro Max": 3, "iPhone 17 Pro Max": 3, "iPhone 17 Air": 2 } },
           { label: "Me es indiferente", sub: "Me adapto a cualquiera", w: {} }
         ]
       },
@@ -1184,8 +1190,8 @@
         opts: [
           { label: "No tengo iPhone", sub: "Sería mi primero", w: { "iPhone 13": 1, "iPhone 14": 1, "iPhone 15": 1, "iPhone 16": 1 } },
           { label: "iPhone 12 o anterior", sub: "Salto grande de generación", w: { "iPhone 15": 1, "iPhone 16": 1, "iPhone 17": 1 } },
-          { label: "iPhone 13 o 14", sub: "Busco un upgrade que se note", w: { "iPhone 16": 2, "iPhone 17": 2, "iPhone 17 Air": 1, "iPhone 17 Pro": 1, "iPhone 13": -2, "iPhone 14": -2 } },
-          { label: "iPhone 15 o 16", sub: "Solo me conviene lo último", w: { "iPhone 17": 2, "iPhone 17 Air": 2, "iPhone 17 Pro": 2, "iPhone 17 Pro Max": 2, "iPhone 15": -2, "iPhone 16": -2 } }
+          { label: "iPhone 13 o 14", sub: "Busco un upgrade que se note", w: { "iPhone 16": 2, "iPhone 17": 2, "iPhone 17 Air": 1, "iPhone 17 Pro": 1, "iPhone 18 Pro": 1, "iPhone 13": -2, "iPhone 14": -2 } },
+          { label: "iPhone 15 o 16", sub: "Solo me conviene lo último", w: { "iPhone 18 Pro": 2, "iPhone 18 Pro Max": 2, "iPhone Duo": 2, "iPhone 17": 2, "iPhone 17 Air": 2, "iPhone 17 Pro": 2, "iPhone 17 Pro Max": 2, "iPhone 15": -2, "iPhone 16": -2 } }
         ]
       }
     ];
@@ -1263,6 +1269,11 @@
       var tam = answers.tamano || "";
       var isPro = best.indexOf("Pro") !== -1;
       var reasons = [];
+      if (best === "iPhone Duo") {
+        reasons.push("Pantalla plegable de 7,6″: la más grande jamás en un iPhone, con diseño que se pliega y entra en el bolsillo.");
+      } else if (best.indexOf("18") !== -1) {
+        reasons.push("Lo último de Apple: chip A20 Pro de 2 nm y cámara de 48 MP con apertura variable.");
+      }
       if (uso.indexOf("Fotos") === 0) {
         reasons.push(isPro ? "Sistema de cámaras Pro con teleobjetivo: el mejor para fotos y video." : "Cámara de 48 MP más que suficiente para fotos y video de nivel alto.");
       } else if (uso.indexOf("Trabajo") === 0) {
